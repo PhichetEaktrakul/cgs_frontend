@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router";
 import { FaUserAlt, FaLock } from "react-icons/fa";
 import toast from "react-hot-toast";
-import logo from "../assets/Gcaplogo_Side.png";
+import logo from "../../assets/Gcaplogo_Side.png";
 
 export default function AdminLogin() {
   const { login, token } = useAuth();
@@ -31,7 +31,7 @@ export default function AdminLogin() {
   return (
     <>
       <div className="bg-linear-65 from-[#0e2353fc] to-[#183f9bfc] min-h-screen flex items-center justify-center p-4">
-        <div className="rounded-2xl bg-white max-w-[300px] h-[500px] w-full p-4 shadow-lg">
+        <div className="rounded-2xl bg-white max-w-[300px] h-[450px] w-full p-4 shadow-lg">
           <div className="flex justify-center my-6">
             <img className="w-[80%]" src={logo} alt="logo" />
           </div>

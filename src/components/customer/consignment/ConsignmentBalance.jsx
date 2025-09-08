@@ -1,0 +1,30 @@
+import { AiOutlineGold } from "react-icons/ai";
+
+export default function ConsignmentBalance({ tempValue }) {
+  return (
+    <>
+      <div className="grid grid-cols-2 grid-rows-1">
+        <div className="p-3">
+          <p className="text-[#dabe96] text-lg mb-1">ยอดทองคงเหลือ (96.5%)</p>
+          <div className="flex text-2xl items-center">
+            <AiOutlineGold className="text-white mr-2" />
+            <span className="text-white">
+              {tempValue.goldBalance96}{" "}
+              <span className="text-lg ml-1">บาท</span>
+            </span>
+          </div>
+        </div>
+        <div className="p-3">
+          <p className="text-[#dabe96] text-lg mb-1">ยอดทองคงเหลือ (99.99%)</p>
+          <div className="flex text-2xl items-center">
+            <AiOutlineGold className="text-white mr-2" />
+            <span className="text-white">
+              {tempValue.goldBalance99}{" "}
+              <span className="text-lg ml-1">กิโล</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}

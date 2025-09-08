@@ -1,20 +1,9 @@
 import axios from "axios";
-import { useAuth } from "../context/AuthContext";
 
-const instance = axios.create({
-  baseURL: "http://localhost:8080",
-});
+const apiUrl = import.meta.env.VITE_API_URL;
 
-// Add JWT token to every request
-instance.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token"); // or from AuthContext
-    if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+// Customer API URL
+export const apiCust = axios.create({ baseURL: apiUrl });
 
-export default instance;
+// Admin API URL
+export const apiAdmin = axios.create({ baseURL: apiUrl });

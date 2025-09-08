@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router";
-import { useUser } from "../context/UserContext";
+import { useUser } from "../../context/UserContext";
+import { apiCust } from "../../api/axiosInstance";
 import { AiOutlineGold } from "react-icons/ai";
 import { IoIosArrowForward } from "react-icons/io";
-import axios from "axios";
-import Header from "../components/customer/Header";
-import ModalTOS from "../components/ModalTOS";
+import Header from "../../components/customer/Header";
+import ModalTOS from "../../components/customer/ModalTOS";
 
 export default function Menu() {
   const navigate = useNavigate();
@@ -14,12 +14,12 @@ export default function Menu() {
   const { user, setUser } = useUser();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const apiUrl = import.meta.env.VITE_API_URL;
 
-  /*------------Handle TOS agreement*/
+  //----------------------------------------------------------------------------------------
+  // Handle TOS agreement
   const handleAgreement = () => {
-    axios
-      .post(`${apiUrl}/customer/tos/add`, {
+    apiCust
+      .post("/customer/tos/add", {
         custId: user.custid,
         firstname: user.firstname,
         lastname: user.lastname,
@@ -30,8 +30,10 @@ export default function Menu() {
       .then(() => document.getElementById("tos_modal").close())
       .catch(console.error);
   };
+  //----------------------------------------------------------------------------------------
 
-  /*------------Menucard Component*/
+  //----------------------------------------------------------------------------------------
+  // Menucard Component
   const MenuButton = ({ label, remark, route }) => (
     <>
       <button
@@ -53,29 +55,33 @@ export default function Menu() {
       </span>
     </>
   );
+  //----------------------------------------------------------------------------------------
 
-  /*------------Fetch user data from token in URL*/
+  //----------------------------------------------------------------------------------------
+  // Fetch user data from token in URL
   useEffect(() => {
     if (!token) {
       setError("No token found in the URL.");
       return;
     }
     setLoading(true);
-    axios
-      .get(`${apiUrl}/json/decode`, { params: { token } })
+    apiCust
+      .get("/json/decode", { params: { token } })
       .then((res) => setUser(res.data))
       .catch((err) => {
         console.error(err);
         setError(err.response?.data || "Failed to fetch user data.");
       })
       .finally(() => setLoading(false));
-  }, [token, apiUrl, setUser]);
+  }, [token, setUser]);
+  //----------------------------------------------------------------------------------------
 
-  /*------------Check if customer already accepted the TOS*/
+  //----------------------------------------------------------------------------------------
+  // Check if customer already accepted the TOS
   useEffect(() => {
     if (!user?.custid || loading) return;
-    axios
-      .get(`${apiUrl}/customer/tos/${user.custid}`)
+    apiCust
+      .get(`/customer/tos/${user.custid}`)
       .then((res) => {
         if (res.data === false) {
           document.getElementById("tos_modal")?.showModal();
@@ -84,7 +90,7 @@ export default function Menu() {
         }
       })
       .catch((err) => console.error("Error checking TOS status:", err));
-  }, [user?.custid, apiUrl, loading]);
+  }, [user?.custid, loading]);
 
   return (
     <>
@@ -107,7 +113,7 @@ export default function Menu() {
                     route="/interest"
                   />
                   <MenuButton
-                    label="ทำรายการไถ่คืน"
+                    label="ทำรายการไถ่ถอน"
                     remark="หมายเหตุ"
                     route="/redeem"
                   />

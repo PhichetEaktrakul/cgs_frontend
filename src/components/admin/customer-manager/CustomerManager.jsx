@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { CgNotes } from "react-icons/cg";
 
-export default function Customer() {
+export default function CustomerManager() {
   const [tick, setTick] = useState("3");
 
   return (
     <>
-      <div className="grid grid-cols-2 grid-rows-3 gap-4 max-w-[1300px]">
+
+                <p>222</p>
+             
+{/*       <div className="grid grid-cols-2 grid-rows-3 gap-4 max-w-[1300px]">
         <fieldset className="fieldset border border-sky-900 shadow-md p-3 rounded-md max-w-2xl row-span-1">
           <legend className="fieldset-legend text-2xl text-sky-900">
             Profile
@@ -519,7 +522,7 @@ export default function Customer() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 }

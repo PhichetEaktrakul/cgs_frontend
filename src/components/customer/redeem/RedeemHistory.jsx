@@ -1,31 +1,11 @@
 import { useState } from "react";
+import { FormatNumber, FormatDateFull } from "../../../utility/function";
 
-export default function InterestHistory({ data }) {
+export default function RedeemHistory({ data }) {
   const [activeTab, setActiveTab] = useState("pending");
 
   const filteredData = data.filter((item) => item.status === activeTab);
 
-  const formatDateBuddhist = (dateStr) => {
-    return new Date(dateStr)
-      .toLocaleString("th-TH", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "2-digit", // last 2 digits of Buddhist year
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false,
-      })
-      .replace(/\u200E/g, ""); // remove any invisible characters
-  };
-  const formatDate = (dateStr) => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString("th-TH", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "2-digit",
-    });
-  };
   return (
     <>
       <div className="mt-4">
@@ -41,8 +21,8 @@ export default function InterestHistory({ data }) {
             </li>
             <li>
               <a
-                className={activeTab === "paid" ? "bg-[#dabe96]" : ""}
-                onClick={() => setActiveTab("paid")}>
+                className={activeTab === "approve" ? "bg-[#dabe96]" : ""}
+                onClick={() => setActiveTab("approve")}>
                 อนุมัติแล้ว
               </a>
             </li>
@@ -61,30 +41,24 @@ export default function InterestHistory({ data }) {
           <table className="table table-zebra w-full text-center">
             <thead>
               <tr>
-                <th>รายการต่อดอกเลขที่</th>
-                <th>เลขที่ขายฝาก</th>
-                <th>ต่อจาก</th>
+                <th>ไถ่ถอนเลขที่</th>
+                <th>เลขที่สัญญา</th>
+                <th>เงินต้น</th>
                 <th>ดอกเบี้ย</th>
-                <th>ตัดต้น</th>
-                <th>ชำระ</th>
-                <th>อัตราดอกเบี้ย</th>
-                <th className="px-11">วันครบกำหนด</th>
+                <th>ยอดรวม</th>
                 <th className="px-11">วันที่ทำรายการ</th>
               </tr>
             </thead>
             <tbody>
               {filteredData.length > 0 ? (
                 filteredData.map((item) => (
-                  <tr key={item.transaction_id}>
-                    <td>{item.interest_id}</td>
+                  <tr key={item.redeem_id}>
+                    <td>{item.redeem_id}</td>
                     <td>{item.pledge_id}</td>
-                    <td>{item.prev_interest_id}</td>
-                    <td>{item.pay_interest}</td>
-                    <td>{item.pay_loan}</td>
-                    <td>{item.pay_interest + item.pay_loan}</td>
-                    <td>{item.old_interest_rate}</td>
-                    <td>{formatDate(item.due_date)}</td>
-                    <td>{formatDateBuddhist(item.transaction_date)}</td>
+                    <td>{FormatNumber(item.principal_paid)}</td>
+                    <td>{FormatNumber(item.interest_paid)} </td>
+                    <td>{FormatNumber(item.total_paid)}</td>
+                    <td>{FormatDateFull(item.transaction_date)}</td>
                   </tr>
                 ))
               ) : (

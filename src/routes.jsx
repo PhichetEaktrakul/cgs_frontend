@@ -1,13 +1,13 @@
 import { Route, Routes } from "react-router";
-import Menu from "./pages/CustomerMenu";
-import Consignment from "./components/customer/Consignment";
-import Interest from "./components/customer/Interest";
-import Redeem from "./components/customer/Redeem";
-import AdminLogin from "./pages/AdminLogin";
-import AdminDashboard from "./pages/AdminDashboard";
+import InitialPage from "./pages/common/InitialPage";
+import Menu from "./pages/customer/CustomerMenu";
+import Consignment from "./pages/customer/Consignment";
+import Interest from "./pages/customer/Interest";
+import Redeem from "./pages/customer/Redeem";
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 import BoardcastPrice from "./pages/BoardcastPrice";
-import InitialPage from "./pages/InitialPage";
-import ProtectedLayout from "./components/ProtectedLayout";
+import ProtectedLayout from "./components/common/ProtectedLayout";
 
 const AppRoutes = () => {
   return (
@@ -19,9 +19,8 @@ const AppRoutes = () => {
       <Route path="/redeem" element={<Redeem />} />
       <Route path="/admin/auth" element={<AdminLogin />} />
       <Route element={<ProtectedLayout />}>
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/dashboard/" element={<AdminDashboard />} />
       </Route>
-
       <Route path="/boardcast" element={<BoardcastPrice />} />
     </Routes>
   );
