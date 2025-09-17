@@ -1,20 +1,11 @@
-import { FormatDate, FormatNumber } from "../../../utility/function";
+import { FormatDate, FormatNumber, CalRemainDays } from "../../../utility/function";
 
 export default function InterestCard({ intList, handleSelectInt }) {
-  //----------------------------------------------------------------------------------------
-  // Calculate Remaining Days
-  const getRemainingDays = (endDate) => {
-    const today = new Date();
-    const end = new Date(endDate);
-    const diffTime = end - today;
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  };
-  //----------------------------------------------------------------------------------------
 
   //----------------------------------------------------------------------------------------
   // Render Remaining Badge
   const RemainingDaysBadge = ({ dueDate }) => {
-    const days = getRemainingDays(dueDate);
+    const days = CalRemainDays(dueDate);
 
     let text, color;
     if (days < 0) {
@@ -42,7 +33,7 @@ export default function InterestCard({ intList, handleSelectInt }) {
           <div
             key={item.interest_id}
             className="grid grid-cols-3 gap-x-1 gap-y-1 border-2 border-sky-900 rounded-lg my-3 p-3 text-md">
-            <div className="text-end pr-1">ต่อดอกเลขที่ :</div>
+            <div className="text-end pr-1">เลขที่ต่อดอก :</div>
             <div>{item.interest_id}</div>
             <div className="text-end">
               <RemainingDaysBadge dueDate={item.due_date} />
@@ -56,7 +47,7 @@ export default function InterestCard({ intList, handleSelectInt }) {
               {item.weight} {item.gold_type == "1" ? "บาท" : "กิโล"}
             </div>
 
-            <div className="text-end pr-1">ยอดชำระ :</div>
+            <div className="text-end pr-1">ดอกเบี้ย :</div>
             <div className="col-span-2">
               {FormatNumber(
                 (item.old_loan_amount * item.old_interest_rate) / 100
@@ -64,7 +55,7 @@ export default function InterestCard({ intList, handleSelectInt }) {
               บาท
             </div>
 
-            <div className="text-end pr-1">สิ้นสุดสัญญา :</div>
+            <div className="text-end pr-1">วันสิ้นสุดสัญญา :</div>
             <div className="col-span-2">
               {FormatDate(item.end_date)}
             </div>

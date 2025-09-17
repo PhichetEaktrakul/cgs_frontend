@@ -1,17 +1,17 @@
 import AppRoutes from "./routes";
 import { BrowserRouter } from "react-router";
 import { AuthProvider } from "./context/AuthContext";
-import { UserProvider } from "./context/UserContext";
+import { CustomerProvider } from "./context/CustomerContext";
 import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <UserProvider>
+        <CustomerProvider>
           <AppRoutes />
           <Toaster />
-        </UserProvider>
+        </CustomerProvider>
       </AuthProvider>
     </BrowserRouter>
   );

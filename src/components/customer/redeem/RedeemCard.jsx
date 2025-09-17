@@ -28,9 +28,9 @@ export default function RedeemCard({ redeemList, handleSelectRed }) {
               {item.weight} {item.gold_type == "1" ? "บาท" : "กิโล"}
             </div>
 
-            <div className="text-end pr-1">ดอกเบี้ย :</div>
+            <div className="text-end pr-1">ดอกเบี้ยที่ต้องชำระ :</div>
             <div>
-              {FormatNumber((item.remain_loan_amount * item.interest_rate) / 100)} บาท
+              {item.remain_num_pay == 0 ? 0 : FormatNumber((item.remain_loan_amount * item.interest_rate) / 100)} บาท
             </div>
 
             <div className="text-end pr-1">ยอดเงินต้นคงเหลือ :</div>

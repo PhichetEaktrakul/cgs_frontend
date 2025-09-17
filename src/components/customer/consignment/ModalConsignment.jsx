@@ -24,7 +24,7 @@ export default function ModalConsignment({
           </p>
 
           <p className="py-4">
-            วงเงินที่ได้ :{" "}
+            วงเงินที่ได้รับ :{" "}
             <span className="bg-amber-100 mx-3 px-2 py-1 rounded">{FormatNumber(tempValue.loanAmount)}</span>
             {" "}บาท
           </p>
@@ -36,7 +36,7 @@ export default function ModalConsignment({
           </p>
 
           <p className="py-4">
-            วันที่สิ้นสุดสัญญา :{" "}
+            วันสิ้นสุดสัญญา :{" "}
             <span className="bg-amber-100 mx-3 px-2 py-1 rounded">{FormatDateHyphen(tempValue.endDate)}</span>
           </p>
 

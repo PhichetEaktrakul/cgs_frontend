@@ -1,107 +1,79 @@
 import { useState } from "react";
-import {
-  FormatDate,
-  FormatDateFull,
-  FormatNumber,
-  GoldTypeText,
-} from "../../../utility/function";
+import { FormatDate, FormatDateFull, FormatNumber, GoldTypeText } from "../../../utility/function";
+import { HiOutlineDocumentMinus } from "react-icons/hi2";
 
 export default function ConsignmentHistory({ history }) {
   const [activeTab, setActiveTab] = useState("pending");
-
+  const tabs = [
+    { key: "pending", label: "รออนุมัติ" },
+    { key: "active", label: "สำเร็จ" },
+    { key: "reject", label: "ไม่สำเร็จ" },
+    { key: "redeem", label: "ไถ่ถอน" },
+    { key: "expire", label: "เกินกำหนด" },
+  ];
   const filteredData = history.filter((item) => item.status === activeTab);
 
   return (
     <>
       <div className="mt-4">
-        {/* Tabs */}
+
+        {/* ---------------------- Tabs ---------------------- */}
         <div className="flex justify-center mt-2">
-          <ul className="menu menu-horizontal bg-base-200 p-0 rounded-md border border-[#dabe96]">
-            <li>
-              <a
-                className={activeTab === "pending" ? "bg-[#dabe96]" : ""}
-                onClick={() => setActiveTab("pending")}>
-                รออนุมัติ
-              </a>
-            </li>
-            <li>
-              <a
-                className={activeTab === "active" ? "bg-[#dabe96]" : ""}
-                onClick={() => setActiveTab("active")}>
-                อนุมัติแล้ว
-              </a>
-            </li>
-            <li>
-              <a
-                className={activeTab === "reject" ? "bg-[#dabe96]" : ""}
-                onClick={() => setActiveTab("reject")}>
-                รายการไม่สำเร็จ
-              </a>
-            </li>
-            <li>
-              <a
-                className={activeTab === "redeem" ? "bg-[#dabe96]" : ""}
-                onClick={() => setActiveTab("redeem")}>
-                ไถ่ถอนเเล้ว
-              </a>
-            </li>
+          <ul className="menu menu-horizontal bg-base-200 p-0 rounded-md border border-[#dabe96] text-[12px]">
+            {tabs.map((tab) => (
+              <li key={tab.key}>
+                <a
+                  className={activeTab === tab.key ? "bg-[#dabe96]" : ""}
+                  onClick={() => setActiveTab(tab.key)}>
+                  {tab.label}
+                </a>
+              </li>
+            ))}
           </ul>
         </div>
 
-        {/* Table */}
-        <div className="overflow-x-auto mt-4">
-          <table className="table table-zebra w-full text-center">
-            <thead>
-              <tr>
-                <th>เลขที่สัญญา</th>
-                <th>น้ำหนัก (บาท)</th>
-                <th>น้ำหนัก (กิโล)</th>
-                <th>ประเภททอง</th>
-                <th>ราคาอ้างอิง</th>
-                <th>วงเงิน (%)</th>
-                <th>วงเงินที่ได้</th>
-                <th>อัตราดอกเบี้ย</th>
-                <th>วันเริ่มต้นสัญญา</th>
-                <th>วันครบกำหนดสัญญา</th>
-                <th className="px-11">วันที่ทำรายการ</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredData.length > 0 ? (
-                filteredData.map((item) => (
-                  <tr key={item.pledge_id}>
-                    <td>{item.pledge_id}</td>
-                    {item.gold_type == 1 ? (
-                      <>
-                        <td>{item.weight}</td>
-                        <td />
-                      </>
-                    ) : (
-                      <>
-                        <td />
-                        <td>{item.weight}</td>
-                      </>
-                    )}
-                    <td>{GoldTypeText(item.gold_type)}</td>
-                    <td>{item.ref_price.toLocaleString()}</td>
-                    <td>{(item.loan_percent * 100).toFixed(2)}%</td>
-                    <td>{FormatNumber(item.loan_amount)}</td>
-                    <td>{item.interest_rate}%</td>
-                    <td>{FormatDate(item.start_date)}</td>
-                    <td>{FormatDate(item.end_date)}</td>
-                    <td>{FormatDateFull(item.transaction_date)}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="9" className="text-center">
-                    ไม่มีรายการ
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+        {/* ---------------------- History ---------------------- */}
+        <div className="h-[70vh] overflow-x-auto my-4">
+          {filteredData.length ? (
+            filteredData.map((item) => (
+              <div
+                key={item.pledge_id}
+                className="grid grid-cols-[30%_20%_30%_20%] gap-y-1 border border-[#dabe96] rounded-lg my-3 p-3 text-[12px]">
+                <p className="col-span-4 font-bold">
+                  เลขที่สัญญา : {item.pledge_id}
+                </p>
+                {[
+                  ["ประเภททอง", GoldTypeText(item.gold_type)],
+                  [
+                    "น้ำหนัก",
+                    `${item.weight} ${item.gold_type === 1 ? "บาท" : "กิโล"}`,
+                  ],
+                  ["วงเงิน (%)", `${(item.loan_percent * 100).toFixed(2)}%`],
+                  ["วงเงินที่ได้", FormatNumber(item.loan_amount)],
+                  ["ราคาอ้างอิง", item.ref_price.toLocaleString()],
+                  ["อัตราดอกเบี้ย", `${item.interest_rate}%`],
+                  ["วันเริ่มต้นสัญญา", FormatDate(item.start_date)],
+                  ["วันสิ้นสุดสัญญา", FormatDate(item.end_date)],
+                ].map(([label, value], i) => (
+                  <span key={i} className="contents">
+                    <span className="text-center pr-1">{label}</span>
+                    <span>: {value}</span>
+                  </span>
+                ))}
+                <span className="text-center pr-1">วันที่ทำรายการ</span>
+                <span className="col-span-3">
+                  : {FormatDateFull(item.transaction_date)}
+                </span>
+              </div>
+            ))
+          ) : (
+            <div className="flex text-gray-400 items-center justify-center">
+              <HiOutlineDocumentMinus className="mb-1 mr-2" />
+              ไม่มีรายการ
+            </div>
+          )}
         </div>
+
       </div>
     </>
   );

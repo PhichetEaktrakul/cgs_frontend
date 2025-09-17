@@ -1,85 +1,68 @@
 import { useState } from "react";
-import {
-  FormatNumber,
-  FormatDate,
-  FormatDateFull,
-} from "../../../utility/function";
+import { FormatNumber, FormatDate, FormatDateFull } from "../../../utility/function";
+import { HiOutlineDocumentMinus } from "react-icons/hi2";
 
 export default function InterestHistory({ data }) {
   const [activeTab, setActiveTab] = useState("pending");
-
+  const tabs = [
+    { key: "pending", label: "รออนุมัติ" },
+    { key: "paid", label: "สำเร็จ" },
+    { key: "reject", label: "ไม่สำเร็จ" },
+  ];
   const filteredData = data.filter((item) => item.status === activeTab);
 
   return (
     <>
       <div className="mt-4">
-        {/* Tabs */}
+
+        {/* ---------------------- Tabs ---------------------- */}
         <div className="flex justify-center mt-2">
-          <ul className="menu menu-horizontal bg-base-200 p-0 rounded-md border border-[#dabe96]">
-            <li>
-              <a
-                className={activeTab === "pending" ? "bg-[#dabe96]" : ""}
-                onClick={() => setActiveTab("pending")}>
-                รออนุมัติ
-              </a>
-            </li>
-            <li>
-              <a
-                className={activeTab === "paid" ? "bg-[#dabe96]" : ""}
-                onClick={() => setActiveTab("paid")}>
-                อนุมัติแล้ว
-              </a>
-            </li>
-            <li>
-              <a
-                className={activeTab === "reject" ? "bg-[#dabe96]" : ""}
-                onClick={() => setActiveTab("reject")}>
-                รายการไม่สำเร็จ
-              </a>
-            </li>
+          <ul className="menu menu-horizontal bg-base-200 p-0 rounded-md border border-[#dabe96] text-[12px]">
+            {tabs.map((tab) => (
+              <li key={tab.key}>
+                <a
+                  className={activeTab === tab.key ? "bg-[#dabe96]" : ""}
+                  onClick={() => setActiveTab(tab.key)}>
+                  {tab.label}
+                </a>
+              </li>
+            ))}
           </ul>
         </div>
 
-        {/* Table */}
-        <div className="overflow-x-auto mt-4">
-          <table className="table table-zebra w-full text-center">
-            <thead>
-              <tr>
-                <th>ต่อดอกเลขที่</th>
-                <th>เลขที่สัญญา</th>
-                <th>ต่อจาก</th>
-                <th>อัตราดอกเบี้ย</th>
-                <th>ดอกเบี้ย</th>
-                <th>ตัดต้น</th>
-                <th>ยอดชำระ</th>
-                <th className="px-9">งวด</th>
-                <th className="px-11">วันที่ทำรายการ</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredData.length > 0 ? (
-                filteredData.map((item) => (
-                  <tr key={item.transaction_id}>
-                    <td>{item.interest_id}</td>
-                    <td>{item.pledge_id}</td>
-                    <td>{item.prev_interest_id}</td>
-                    <td>{item.old_interest_rate} %</td>
-                    <td>{FormatNumber(item.pay_interest)}</td>
-                    <td>{FormatNumber(item.pay_loan)}</td>
-                    <td>{FormatNumber(item.pay_interest + item.pay_loan)}</td>
-                    <td>{FormatDate(item.due_date)}</td>
-                    <td>{FormatDateFull(item.transaction_date)}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="9" className="text-center">
-                    ไม่มีรายการ
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+        {/* ---------------------- History ---------------------- */}
+        <div className="h-[70vh] overflow-x-auto my-4">
+          {filteredData.length ? (
+            filteredData.map((item) => (
+              <div
+                key={item.transaction_id}
+                className="grid grid-cols-[30%_20%_30%_20%] gap-y-1 border border-[#dabe96] rounded-lg my-3 p-3 text-[12px]">
+                <p className="col-span-4 font-bold">
+                  ต่อดอกเลขที่ : {item.interest_id}
+                </p>
+                {[
+                  ["ต่อจาก", item.prev_interest_id],
+                  ["เลขที่สัญญา", item.pledge_id],
+                  ["อัตราดอกเบี้ย", `${item.old_interest_rate}%`],
+                  ["ดอกเบี้ย", FormatNumber(item.pay_interest)],
+                  ["ตัดต้น", FormatNumber(item.pay_loan)],
+                  ["ยอดชำระ", FormatNumber(item.pay_interest + item.pay_loan)],
+                  ["งวด", FormatDate(item.due_date)],
+                  ["วันที่ทำรายการ", FormatDateFull(item.transaction_date)],
+                ].map(([label, value], i) => (
+                  <span key={i} className="contents">
+                    <span className="text-center pr-1">{label}</span>
+                    <span>: {value}</span>
+                  </span>
+                ))}
+              </div>
+            ))
+          ) : (
+            <div className="flex text-gray-400 items-center justify-center">
+              <HiOutlineDocumentMinus className="mb-1 mr-2" />
+              ไม่มีรายการ
+            </div>
+          )}
         </div>
       </div>
     </>

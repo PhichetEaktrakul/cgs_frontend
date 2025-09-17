@@ -6,17 +6,27 @@ import {
   GoldTypeText,
 } from "../../../utility/function";
 
-export default function TicketConsignment({pledgeData, handleConsignmentUpdate}) {
+export default function TicketConsignment({ pledgeData, handleConsignmentUpdate }) {
   const [activeTab, setActiveTab] = useState("pending");
-
+  const column = [
+    "เลขที่สัญญา",
+    "รหัสลูกค้า",
+    "น้ำหนัก",
+    "ประเภททอง",
+    "ราคาอ้างอิง",
+    "วงเงิน (%)",
+    "วงเงินขายฝาก",
+    "อัตราดอกเบี้ย",
+    "วันเริ่มต้นสัญญา",
+    "วันสิ้นสุดสัญญา",
+    "วันที่ทำรายการ"
+  ];
   const filteredData = pledgeData.filter((item) => item.status === activeTab);
 
   return (
     <>
-      <fieldset className="fieldset border border-sky-900 shadow-md p-3 rounded-md max-w-2xl row-span-1 mb-3">
-        <legend className="fieldset-legend text-2xl text-sky-900">
-          รายการขายฝาก
-        </legend>
+      <fieldset className="fieldset w-[1500px] border border-sky-900 shadow-md p-3 rounded-md overflow-auto row-span-1 mb-3">
+        <legend className="fieldset-legend text-2xl text-sky-900">รายการขายฝาก</legend>
 
         {/*------------Tabs------------*/}
         <div className="flex justify-center mt-2">
@@ -36,7 +46,7 @@ export default function TicketConsignment({pledgeData, handleConsignmentUpdate})
                   activeTab === "active" ? "bg-sky-700 text-white" : ""
                 }
                 onClick={() => setActiveTab("active")}>
-                อนุมัติแล้ว
+                อนุมัติ
               </a>
             </li>
             <li>
@@ -54,7 +64,16 @@ export default function TicketConsignment({pledgeData, handleConsignmentUpdate})
                   activeTab === "redeem" ? "bg-sky-700 text-white" : ""
                 }
                 onClick={() => setActiveTab("redeem")}>
-                ไถ่ถอนเเล้ว
+                ไถ่ถอน
+              </a>
+            </li>
+            <li>
+              <a
+                className={
+                  activeTab === "expire" ? "bg-sky-700 text-white" : ""
+                }
+                onClick={() => setActiveTab("expire")}>
+                เลยกำหนด
               </a>
             </li>
           </ul>
@@ -62,21 +81,10 @@ export default function TicketConsignment({pledgeData, handleConsignmentUpdate})
 
         {/*------------Table------------*/}
         <div className="mt-4">
-          <table className="table table-zebra w-full text-center">
+          <table className="table w-full text-center">
             <thead>
               <tr className="bg-sky-700 text-white">
-                <th>เลขที่สัญญา</th>
-                <th>รหัสลูกค้า</th>
-                <th>น้ำหนัก (บาท)</th>
-                <th>น้ำหนัก (กิโล)</th>
-                <th>ประเภททอง</th>
-                <th>ราคาอ้างอิง</th>
-                <th>วงเงิน (%)</th>
-                <th>วงเงินขายฝาก</th>
-                <th>อัตราดอกเบี้ย</th>
-                <th>วันเริ่มต้นสัญญา</th>
-                <th>วันครบกำหนดสัญญา</th>
-                <th>วันที่ทำรายการ</th>
+                {column.map((col) => (<th key={col}>{col}</th>))}
                 <th></th>
                 <th></th>
               </tr>
@@ -84,20 +92,20 @@ export default function TicketConsignment({pledgeData, handleConsignmentUpdate})
             <tbody>
               {filteredData.length > 0 ? (
                 filteredData.map((item) => (
-                  <tr key={item.transaction_id}>
+                  <tr
+                    key={item.transaction_id}
+                    className={`${
+                      item.gold_type === 1
+                        ? "bg-yellow-100"
+                        : item.gold_type === 2
+                        ? "bg-blue-100"
+                        : ""
+                    }`}>
                     <td>{item.pledge_id}</td>
                     <td>{item.customer_id}</td>
-                    {item.gold_type == 1 ? (
-                      <>
-                        <td>{item.weight}</td>
-                        <td></td>
-                      </>
-                    ) : (
-                      <>
-                        <td></td>
-                        <td>{item.weight}</td>
-                      </>
-                    )}
+                    <td>
+                      {item.weight} {item.gold_type == 1 ? "บาท" : "กิโล"}
+                    </td>
                     <td>{GoldTypeText(item.gold_type)}</td>
                     <td>{FormatNumber(item.ref_price)}</td>
                     <td>{(item.loan_percent * 100).toFixed(2)}%</td>

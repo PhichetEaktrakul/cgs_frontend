@@ -72,8 +72,9 @@ export default function ConsignmentForm({
           </div>
         </div>
       </div>
+      
       <form
-      className="px-3"
+        className="px-3"
         onSubmit={(e) => {
           e.preventDefault();
           setError(false);
@@ -85,12 +86,13 @@ export default function ConsignmentForm({
             return setError(true);
           document.getElementById("submit_modal").showModal();
         }}>
+
         <div className="mt-2">
           <p>
             จำนวนที่ต้องการขายฝาก <span className="text-red-600">*</span>
           </p>
           <label
-            className={`input w-100 mt-2 h-[35px] ${
+            className={`input w-full mt-2 h-[35px] ${
               error ? "border-red-600 border-1" : ""
             }`}>
             <input
@@ -115,8 +117,8 @@ export default function ConsignmentForm({
         </div>
 
         <div className="mt-2">
-          <p>คงเหลือ</p>
-          <label className="input w-100 mt-2 h-[35px] bg-yellow-50">
+          <p>คงเหลือทอง</p>
+          <label className="input w-full mt-2 h-[35px] bg-yellow-50">
             <input
               type="number"
               placeholder="0"
@@ -137,7 +139,7 @@ export default function ConsignmentForm({
 
         <div className="mt-2">
           <p>วงเงินที่ได้รับ</p>
-          <label className="input w-100 mt-2 h-[35px] bg-yellow-50">
+          <label className="input w-full mt-2 h-[35px] bg-yellow-50">
             <input
               type="text"
               value={FormatNumber(tempValue.loanAmount)}
@@ -149,7 +151,7 @@ export default function ConsignmentForm({
 
         <div className="mt-2">
           <p>ดอกเบี้ยที่ต้องชำระ</p>
-          <label className="input w-100 mt-2 h-[35px] bg-yellow-50">
+          <label className="input w-full mt-2 h-[35px] bg-yellow-50">
             <input
               type="text"
               value={FormatNumber(tempValue.interestPay)}

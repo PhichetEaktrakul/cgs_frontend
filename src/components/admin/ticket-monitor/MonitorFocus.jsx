@@ -1,4 +1,4 @@
-import {FormatNumber, FormatDate, GoldTypeText} from "../../../utility/function";
+import {FormatNumber, FormatDate, GoldTypeText, CalRemainDays, CalFunctions} from "../../../utility/function";
 import { RiExchangeBoxFill } from "react-icons/ri";
 
 export default function MonitorFocus({
@@ -10,30 +10,7 @@ export default function MonitorFocus({
 }) {
   const columns = ["#", "เลขที่ Ticket", "เลขที่สัญญา", "วันครบกำหนดสัญญา", "วัน", "สถานะ", "ประเภททอง", "Loan+Int", "น้ำหนัก (BAHT)", "Gain/Loss", "หมายเหตุ", "Tools"];
 
-  //----------------------------------------------------------------------------------------
-  // Calculate Remain Date of Pledge Ticket
-  const calRemainDays = (endDate) => {
-    const today = new Date();
-    const expireDate = new Date(endDate);
-    const diffTime = expireDate - today;
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  };
-  //----------------------------------------------------------------------------------------
 
-  //----------------------------------------------------------------------------------------
-  // Calculate Function
-  const calFunctions = (item) => {
-    const adjustedWeight =
-      item.gold_type === 1 ? item.weight : item.weight * 66.67;
-    const avgLoan =
-      (item.remain_loan_amount + item.sum_pay_interest) / adjustedWeight;
-    const gainLoss =
-      item.gold_type === 1
-        ? prices.gold96_sell - avgLoan
-        : prices.gold99_sell - avgLoan;
-    return { avgLoan, gainLoss, adjustedWeight };
-  };
-  //----------------------------------------------------------------------------------------
 
   return (
     <>
@@ -56,7 +33,7 @@ export default function MonitorFocus({
               {data.length ? (
                 data.map((item) => {
                   const { avgLoan, gainLoss, adjustedWeight } =
-                    calFunctions(item);
+                    CalFunctions(item, prices);
                   return (
                     <tr
                       key={item.pledge_id}
@@ -85,7 +62,7 @@ export default function MonitorFocus({
                       <td>{item.transaction_id}</td>
                       <td>{item.pledge_id}</td>
                       <td>{FormatDate(item.end_date)}</td>
-                      <td>{calRemainDays(item.end_date)}</td>
+                      <td>{CalRemainDays(item.end_date)}</td>
                       <td>
                         <div
                           className={`badge text-white border-0 ${
@@ -115,7 +92,7 @@ export default function MonitorFocus({
                   );
                 })
               ) : (
-                <tr>
+                <tr className="text-[14px]!">
                   <td colSpan={12}>ไม่มีรายการ</td>
                 </tr>
               )}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useUser } from "../../context/UserContext";
+import { useCustomer } from "../../context/CustomerContext";
 import { apiCust } from "../../api/axiosInstance";
 import toast from "react-hot-toast";
 import Header from "../../components/customer/Header";
@@ -9,7 +9,7 @@ import ConsignmentHistory from "../../components/customer/consignment/Consignmen
 import ModalConsignment from "../../components/customer/consignment/ModalConsignment";
 
 export default function Consignment() {
-  const { user } = useUser();
+  const { customer } = useCustomer();
   const randomPledgeId = Math.floor(Math.random() * 1000); // 0 to 999
 
   const [isLoading, setIsLoading] = useState(false);
@@ -98,7 +98,7 @@ export default function Consignment() {
         toast.success("ทำรายการสำเร็จ!");
         setIsLoading(false);
         document.getElementById("submit_modal").close();
-        fetchConsignmentData(user?.custid);
+        fetchConsignmentData(customer?.custid);
       })
       .catch((err) => {
         toast.error("ทำรายการล้มเหลว!");
@@ -126,7 +126,7 @@ export default function Consignment() {
   //----------------------------------------------------------------------------------------
 
   //----------------------------------------------------------------------------------------
-  // Calculate interest Payable
+  // Calculate Payable interest
   useEffect(() => {
     setTempValue((prev) => ({
       ...prev,
@@ -136,8 +136,8 @@ export default function Consignment() {
   //----------------------------------------------------------------------------------------
 
   useEffect(() => {
-    fetchConsignmentData(user?.custid);
-  }, [user?.custid]);
+    fetchConsignmentData(customer?.custid);
+  }, [customer?.custid]);
 
   return (
     <Header

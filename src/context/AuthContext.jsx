@@ -1,7 +1,8 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import {createContext, useContext, useState, useEffect, useCallback} from "react";
 import { useNavigate } from "react-router";
 import { apiAdmin } from "../api/axiosInstance";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 //----------------------------------------------------------------------------------------
 // Authentication Context For Admin
@@ -13,6 +14,54 @@ export const AuthProvider = ({ children }) => {
   const [admin, setAdmin] = useState(localStorage.getItem("admin") || null);
   const apiUrl = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
+
+  // Admin(user) login
+  const login = async (username, password) => {
+    try {
+      const res = await axios.post(`${apiUrl}/auth/login`, {
+        username,
+        password,
+      });
+      setToken(res.data.token);
+      localStorage.setItem("token", res.data.token);
+
+      setAdmin(username);
+      localStorage.setItem("admin", username);
+
+      return true;
+    } catch (err) {
+      console.error(err.response?.data || err.message);
+      return false;
+    }
+  };
+
+  // Admin(user) logout
+  const logout = () => {
+    setToken(null);
+    setAdmin(null);
+    localStorage.removeItem("token");
+    localStorage.removeItem("admin");
+  };
+
+  // Decode Jwt Token
+  const decodeToken = (token) => {
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      return payload;
+    } catch (err) {
+      return null;
+    }
+  };
+
+  // Run token expiration check on mount and periodically
+  const checkTokenExpiration = useCallback(() => {
+    const exp = decodeToken(token)?.exp;
+    if (exp && exp < Date.now() / 1000) {      
+      logout();
+      toast.error("Token หมดอายุ");
+      navigate("/admin/auth");
+    }
+  }, [token, navigate, logout]);
 
   // Keep apiAdmin headers in sync when token changes
   useEffect(() => {
@@ -41,33 +90,16 @@ export const AuthProvider = ({ children }) => {
     };
   }, [navigate]);
 
-  const login = async (username, password) => {
-    try {
-      const res = await axios.post(`${apiUrl}/auth/login`, {
-        username,
-        password,
-      });
-      setToken(res.data.token);
-      localStorage.setItem("token", res.data.token);
+  // Call check token every 5 min
+  useEffect(() => {
+    checkTokenExpiration();
+    const interval = setInterval(() => {
+      checkTokenExpiration();
+    }, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, [checkTokenExpiration]);
 
-      setAdmin(username);
-      localStorage.setItem("admin", username);
-
-      return true;
-    } catch (err) {
-      console.error(err.response?.data || err.message);
-      return false;
-    }
-  };
-
-  const logout = () => {
-    setToken(null);
-    setAdmin(null);
-    localStorage.removeItem("token");
-    localStorage.removeItem("admin");
-  };
-
-  const value = { token, admin, login, logout };
+  const value = { token, admin, login, logout, checkTokenExpiration };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

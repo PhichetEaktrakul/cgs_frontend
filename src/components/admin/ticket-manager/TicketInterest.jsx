@@ -7,15 +7,24 @@ import {
 
 export default function TicketInterest({ interestData, handleInterestUpdate }) {
   const [activeTab, setActiveTab] = useState("pending");
-
+  const column = [
+    "เลขที่ต่อดอก",
+    "รหัสลูกค้า",
+    "เลขที่สัญญา",
+    "ต่อจาก",
+    "อัตราดอกเบี้ย",
+    "ดอกเบี้ย",
+    "ตัดต้น",
+    "ชำระรวม",
+    "วันครบกำหนด",
+    "วันที่ทำรายการ"
+  ];
   const filteredData = interestData.filter((item) => item.status === activeTab);
 
   return (
     <>
-      <fieldset className="fieldset border border-sky-900 shadow-md p-3 rounded-md max-w-2xl row-span-1 my-3">
-        <legend className="fieldset-legend text-2xl text-sky-900">
-          รายการต่อดอก
-        </legend>
+      <fieldset className="fieldset w-[1300px] border border-sky-900 shadow-md p-3 rounded-md row-span-1 my-3">
+        <legend className="fieldset-legend text-2xl text-sky-900">รายการต่อดอก</legend>
 
         {/*------------Tabs------------*/}
         <div className="flex justify-center mt-2">
@@ -33,7 +42,7 @@ export default function TicketInterest({ interestData, handleInterestUpdate }) {
               <a
                 className={activeTab === "paid" ? "bg-sky-700 text-white" : ""}
                 onClick={() => setActiveTab("paid")}>
-                อนุมัติแล้ว
+                อนุมัติ
               </a>
             </li>
             <li>
@@ -42,7 +51,7 @@ export default function TicketInterest({ interestData, handleInterestUpdate }) {
                   activeTab === "reject" ? "bg-sky-700 text-white" : ""
                 }
                 onClick={() => setActiveTab("reject")}>
-                รายการไม่สำเร็จ
+                ไม่อนุมัติ
               </a>
             </li>
           </ul>
@@ -50,19 +59,10 @@ export default function TicketInterest({ interestData, handleInterestUpdate }) {
 
         {/*------------Table------------*/}
         <div className="mt-4">
-          <table className="table table-zebra w-full text-center">
+          <table className="table w-full text-center">
             <thead>
               <tr className="bg-sky-700 text-white">
-                <th>ต่อดอกเลขที่</th>
-                <th>รหัสลูกค้า</th>
-                <th>เลขที่สัญญา</th>
-                <th>ต่อจาก</th>
-                <th>ดอกเบี้ย</th>
-                <th>ตัดต้น</th>
-                <th>ชำระ</th>
-                <th>อัตราดอกเบี้ย</th>
-                <th>วันครบกำหนด</th>
-                <th>วันที่ทำรายการ</th>
+                {column.map((col) => (<th key={col}>{col}</th>))}
                 <th></th>
                 <th></th>
               </tr>
@@ -70,15 +70,23 @@ export default function TicketInterest({ interestData, handleInterestUpdate }) {
             <tbody>
               {filteredData.length > 0 ? (
                 filteredData.map((item) => (
-                  <tr key={item.interest_id}>
+                  <tr
+                    key={item.interest_id}
+                    className={`${
+                      item.gold_type === 1
+                        ? "bg-yellow-100"
+                        : item.gold_type === 2
+                        ? "bg-blue-100"
+                        : ""
+                    }`}>
                     <td>{item.interest_id}</td>
                     <td>{item.customer_id}</td>
                     <td>{item.pledge_id}</td>
                     <td>{item.prev_interest_id}</td>
+                    <td>{item.old_interest_rate}%</td>
                     <td>{FormatNumber(item.pay_interest)}</td>
                     <td>{FormatNumber(item.pay_loan)}</td>
                     <td>{FormatNumber(item.pay_interest + item.pay_loan)}</td>
-                    <td>{item.old_interest_rate}%</td>
                     <td>{FormatDate(item.due_date)}</td>
                     <td>{FormatDateFull(item.transaction_date)}</td>
 
@@ -93,6 +101,7 @@ export default function TicketInterest({ interestData, handleInterestUpdate }) {
                                 item.transaction_id,
                                 item.pledge_id,
                                 item.due_date,
+                                item.end_date,
                                 item.pay_interest,
                                 item.old_loan_amount - item.pay_loan,
                                 item.old_interest_rate,
@@ -111,6 +120,7 @@ export default function TicketInterest({ interestData, handleInterestUpdate }) {
                                 item.transaction_id,
                                 item.pledge_id,
                                 item.due_date,
+                                item.end_date,
                                 item.pay_interest,
                                 item.old_loan_amount - item.pay_loan,
                                 item.old_interest_rate,
@@ -133,7 +143,7 @@ export default function TicketInterest({ interestData, handleInterestUpdate }) {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="9" className="text-center">
+                  <td colSpan="10" className="text-center">
                     ไม่มีรายการ
                   </td>
                 </tr>

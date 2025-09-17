@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useUser } from "../../context/UserContext";
+import { useCustomer } from "../../context/CustomerContext";
 import { apiCust } from "../../api/axiosInstance";
 import toast from "react-hot-toast";
 import Header from "../../components/customer/Header";
@@ -15,7 +15,7 @@ export default function Interest() {
   const [history, setHistory] = useState([]);
   const [error, setError] = useState(false);
 
-  const { user } = useUser();
+  const { customer } = useCustomer();
 
   //----------------------------------------------------------------------------------------
   // Select Target Interest
@@ -62,8 +62,8 @@ export default function Interest() {
   const fetchData = async () => {
     try {
       const [intRes, historyRes] = await Promise.all([
-        apiCust.get(`/interest/payable/${user.custid}`),
-        apiCust.get(`/interest/status/${user.custid}`),
+        apiCust.get(`/interest/payable/${customer.custid}`),
+        apiCust.get(`/interest/status/${customer.custid}`),
       ]);
       setIntList(intRes.data);
       setHistory(historyRes.data);

@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import Monitor from "../../components/admin/ticket-monitor/Monitor";
 import CustomerManager from "../../components/admin/customer-manager/CustomerManager";
 import TicketManager from "../../components/admin/ticket-manager/TicketManager";
+import UserManager from "../../components/admin/user-manager/UserManager";
 
 export default function AdminDashboard() {
   const { admin, logout } = useAuth();
@@ -133,6 +134,12 @@ export default function AdminDashboard() {
     return () => clearInterval(waitForJQuery);
   }, []);
   //----------------------------------------------------------------------------------------
+  
+  useEffect(() => {
+    apiAdmin.put("/consignment/open-market")
+      .then(res => console.log(res.data))
+      .catch(err => console.error(err));
+  }, []);
 
   return (
     <>
@@ -163,12 +170,12 @@ export default function AdminDashboard() {
 
       {/* ------------------------- Tab ------------------------- */}
       <div className="tabs tabs-lift bg-sky-900 h-[96vh] pt-2">
+
+        {/* ------------------------- Monitor ------------------------- */}
         <input
           type="radio"
           name="my_tabs_3"
-          className={`tab hover:text-yellow-400 ${
-            activeTab === "Monitor" ? "pointer-events-none" : ""
-          } `}
+          className={`tab hover:text-yellow-400 ${activeTab === "Monitor" ? "pointer-events-none" : ""} `}
           aria-label="Tickets Monitor"
           checked={activeTab === "Monitor"}
           onChange={() => handleTabChange("Monitor")}
@@ -177,32 +184,42 @@ export default function AdminDashboard() {
           <Monitor refetchKey={activeTab === "Monitor"} prices={prices} />
         </div>
 
+        {/* ------------------------- Customer ------------------------- */}
         <input
           type="radio"
           name="my_tabs_3"
-          className={`tab hover:text-yellow-400 ${
-            activeTab === "Customers" ? "pointer-events-none" : ""
-          } `}
+          className={`tab hover:text-yellow-400 ${activeTab === "Customers" ? "pointer-events-none" : ""} `}
           aria-label="Customers"
           checked={activeTab === "Customers"}
           onChange={() => handleTabChange("Customers")}
         />
         <div className="tab-content bg-white border-base-300 p-6">
-          <CustomerManager refetchKey={activeTab === "Customers"} />
+          <CustomerManager refetchKey={activeTab === "Customers"} prices={prices} />
         </div>
 
+        {/* ------------------------- Manage ------------------------- */}
         <input
           type="radio"
           name="my_tabs_3"
-          className={`tab hover:text-yellow-400 ${
-            activeTab === "TicketManager" ? "pointer-events-none" : ""
-          } `}
+          className={`tab hover:text-yellow-400 ${activeTab === "TicketManager" ? "pointer-events-none" : ""} `}
           aria-label="Tickets Manager"
           checked={activeTab === "TicketManager"}
           onChange={() => handleTabChange("TicketManager")}
         />
         <div className="tab-content bg-white border-base-300 p-6">
           <TicketManager refetchKey={activeTab === "TicketManager"} />
+        </div>
+
+        <input
+          type="radio"
+          name="my_tabs_3"
+          className={`tab hover:text-yellow-400 ${activeTab === "UserManager" ? "pointer-events-none" : ""} `}
+          aria-label="User Manager"
+          checked={activeTab === "UserManager"}
+          onChange={() => handleTabChange("UserManager")}
+        />
+        <div className="tab-content bg-white border-base-300 p-6">
+          <UserManager refetchKey={activeTab === "UserManager"} />
         </div>
       </div>
     </>

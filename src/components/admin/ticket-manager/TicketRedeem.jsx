@@ -7,15 +7,23 @@ import {
 
 export default function TicketRedeem({ redeemData, handleRedeemUpdate }) {
   const [activeTab, setActiveTab] = useState("pending");
-
+  const column = [
+    "เลขที่ไถ่ถอน",
+    "รหัสลูกค้า",
+    "เลขที่สัญญา",
+    "น้ำหนัก",
+    "ประเภททอง",
+    "ดอกเบี้ย",
+    "เงินต้น",
+    "ชำระรวม",
+    "วันที่ทำรายการ"
+  ];
   const filteredData = redeemData.filter((item) => item.status === activeTab);
 
   return (
     <>
-      <fieldset className="fieldset border border-sky-900 shadow-md p-3 rounded-md max-w-2xl row-span-1 mt-3">
-        <legend className="fieldset-legend text-2xl text-sky-900">
-          รายการไถ่ถอน
-        </legend>
+      <fieldset className="fieldset w-[1300px] border border-sky-900 shadow-md p-3 rounded-md row-span-1 mt-3">
+        <legend className="fieldset-legend text-2xl text-sky-900">รายการไถ่ถอน</legend>
 
         {/*------------Tabs------------*/}
         <div className="flex justify-center mt-2">
@@ -35,7 +43,7 @@ export default function TicketRedeem({ redeemData, handleRedeemUpdate }) {
                   activeTab === "approve" ? "bg-sky-700 text-white" : ""
                 }
                 onClick={() => setActiveTab("approve")}>
-                อนุมัติแล้ว
+                อนุมัติ
               </a>
             </li>
             <li>
@@ -44,7 +52,7 @@ export default function TicketRedeem({ redeemData, handleRedeemUpdate }) {
                   activeTab === "reject" ? "bg-sky-700 text-white" : ""
                 }
                 onClick={() => setActiveTab("reject")}>
-                รายการไม่สำเร็จ
+                ไม่อนุมัติ
               </a>
             </li>
           </ul>
@@ -52,18 +60,10 @@ export default function TicketRedeem({ redeemData, handleRedeemUpdate }) {
 
         {/*------------Table------------*/}
         <div className="mt-4">
-          <table className="table table-zebra w-full text-center">
+          <table className="table w-full text-center">
             <thead>
               <tr className="bg-sky-700 text-white">
-                <th>ไถ่ถอนเลขที่</th>
-                <th>รหัสลูกค้า</th>
-                <th>เลขที่สัญญา</th>
-                <th>น้ำหนัก</th>
-                <th>ประเภททอง</th>
-                <th>เงินต้น</th>
-                <th>ดอกเบี้ย</th>
-                <th>ยอดรวม</th>
-                <th>วันที่ทำรายการ</th>
+                {column.map((col) => (<th key={col}>{col}</th>))}
                 <th></th>
                 <th></th>
               </tr>
@@ -71,14 +71,24 @@ export default function TicketRedeem({ redeemData, handleRedeemUpdate }) {
             <tbody>
               {filteredData.length > 0 ? (
                 filteredData.map((item) => (
-                  <tr key={item.redeem_id}>
+                  <tr
+                    key={item.redeem_id}
+                    className={`${
+                      item.gold_type === 1
+                        ? "bg-yellow-100"
+                        : item.gold_type === 2
+                        ? "bg-blue-100"
+                        : ""
+                    }`}>
                     <td>{item.redeem_id}</td>
                     <td>{item.customer_id}</td>
                     <td>{item.pledge_id}</td>
-                    <td>{item.weight}</td>
+                    <td>
+                      {item.weight} {item.gold_type == 1 ? "บาท" : "กิโล"}
+                    </td>
                     <td>{GoldTypeText(item.gold_type)}</td>
-                    <td>{FormatNumber(item.principal_paid)}</td>
                     <td>{FormatNumber(item.interest_paid)}</td>
+                    <td>{FormatNumber(item.principal_paid)}</td>
                     <td>
                       {FormatNumber(item.principal_paid + item.interest_paid)}
                     </td>

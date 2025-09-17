@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useUser } from "../../context/UserContext";
+import { useCustomer } from "../../context/CustomerContext";
 import { apiCust } from "../../api/axiosInstance";
 import toast from "react-hot-toast";
 import Header from "../../components/customer/Header";
@@ -12,7 +12,7 @@ export default function Redeem() {
   const [selectedData, setSelectedData] = useState(null);
   const [history, setHistory] = useState([]);
 
-  const { user } = useUser();
+  const { customer } = useCustomer();
 
   //----------------------------------------------------------------------------------------
   // Select Target Redeem
@@ -21,6 +21,11 @@ export default function Redeem() {
     document.getElementById("redeem_modal").showModal();
   };
   //----------------------------------------------------------------------------------------
+
+  const calculateInterestPay = (data) => {
+    if (data.remain_num_pay === 0) return 0;
+    return (data.remain_loan_amount * data.interest_rate) / 100;
+  };
 
   //----------------------------------------------------------------------------------------
   // Submit Redeem Transaction
@@ -32,8 +37,7 @@ export default function Redeem() {
         transactionId: selectedData.transaction_id,
         pledgeId: selectedData.pledge_id,
         principalPay: selectedData.remain_loan_amount,
-        interestPay:
-          (selectedData.remain_loan_amount * selectedData.interest_rate) / 100,
+        interestPay: calculateInterestPay(selectedData),
       });
 
       toast.success("ทำรายการไถ่ถอนสำเร็จ!");
@@ -50,8 +54,8 @@ export default function Redeem() {
   const fetchData = async () => {
     try {
       const [redeemRes, historyRes] = await Promise.all([
-        apiCust.get(`/redeem/list/${user.custid}`),
-        apiCust.get(`/redeem/status/${user.custid}`),
+        apiCust.get(`/redeem/list/${customer.custid}`),
+        apiCust.get(`/redeem/status/${customer.custid}`),
       ]);
 
       setRedeemList(redeemRes.data);

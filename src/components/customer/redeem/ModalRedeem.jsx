@@ -26,11 +26,14 @@ export default function ModalRedeem({ selectedData, postRedeem }) {
           <p className="py-4">
             ยอดที่ต้องชำระรวม :{" "}
             <span className="bg-amber-100 mx-3 px-2 py-1 rounded">
-              {FormatNumber(
-                selectedData?.remain_loan_amount +
-                  (selectedData?.remain_loan_amount * selectedData?.interest_rate) /
-                    100
-              )}
+              {selectedData?.remain_num_pay == 0
+                ? FormatNumber(selectedData?.remain_loan_amount)
+                : FormatNumber(
+                    selectedData?.remain_loan_amount +
+                      (selectedData?.remain_loan_amount *
+                        selectedData?.interest_rate) /
+                        100
+                  )}
             </span>
             บาท
           </p>

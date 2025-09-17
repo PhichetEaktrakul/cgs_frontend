@@ -10,7 +10,8 @@ export default function TicketManager({ refetchKey }) {
   const [interestData, setInterestData] = useState([]);
   const [redeemData, setRedeemData] = useState([]);
 
-  // Generic fetch helper
+  //----------------------------------------------------------------------------------------
+  // Fetch helper
   const fetchData = async (url, setter, errorMsg = "โหลดข้อมูลล้มเหลว") => {
     try {
       const { data } = await apiAdmin.get(url);
@@ -20,8 +21,10 @@ export default function TicketManager({ refetchKey }) {
       toast.error(errorMsg);
     }
   };
+  //----------------------------------------------------------------------------------------
 
-  // Generic update helper
+  //----------------------------------------------------------------------------------------
+  // Update helper
   const updateStatus = async (url, payload, successMsg, refetch) => {
     try {
       await apiAdmin.post(url, payload);
@@ -32,8 +35,10 @@ export default function TicketManager({ refetchKey }) {
       toast.error("อัพเดทสถานะล้มเหลว");
     }
   };
+  //----------------------------------------------------------------------------------------
 
-  // ------------------ Handlers ------------------ //
+  //----------------------------------------------------------------------------------------
+  // Update Consignment Status
   const handleConsignmentUpdate = (
     transactionId,
     pledgeId,
@@ -60,18 +65,26 @@ export default function TicketManager({ refetchKey }) {
       fetchData("/consignment/status/all", setPledgeData)
     );
   };
+  //----------------------------------------------------------------------------------------
 
+  //----------------------------------------------------------------------------------------
+  // Update Interest Status
   const handleInterestUpdate = (
     interestId,
     transactionId,
     pledgeId,
     dueDate,
+    endDate,
     interestAmount,
     loanAmount,
     intRate,
     method
   ) => {
-    const formattedDate = new Date(dueDate)
+    const formattedDueDate = new Date(dueDate)
+      .toISOString()
+      .slice(0, 19)
+      .replace("T", " ");
+    const formattedEndDate = new Date(endDate)
       .toISOString()
       .slice(0, 19)
       .replace("T", " ");
@@ -79,7 +92,8 @@ export default function TicketManager({ refetchKey }) {
       interestId,
       transactionId,
       pledgeId,
-      dueDate: formattedDate,
+      dueDate: formattedDueDate,
+      endDate: formattedEndDate,
       interestAmount,
       loanAmount,
       intRate,
@@ -93,7 +107,10 @@ export default function TicketManager({ refetchKey }) {
       fetchData("/interest/status/all", setInterestData)
     );
   };
+  //----------------------------------------------------------------------------------------
 
+  //----------------------------------------------------------------------------------------
+  // Update Redeem Status
   const handleRedeemUpdate = (
     transId,
     pledgeId,
@@ -104,12 +121,15 @@ export default function TicketManager({ refetchKey }) {
   ) => {
     const payload = { transId, pledgeId, goldType, weight, custId, method };
     const msg = method === "approve" ? "อนุมัติเรียบร้อย" : "ปฏิเสธเรียบร้อย";
-    updateStatus("/redeem/update/status", payload, msg, () =>
-      fetchData("/redeem/status/all", setRedeemData)
-    );
+    updateStatus("/redeem/update/status", payload, msg, () => {
+      fetchData("/redeem/status/all", setRedeemData);
+      fetchData("/consignment/status/all", setPledgeData);
+    });
   };
+  //----------------------------------------------------------------------------------------
 
-  // ------------------ Fetch on mount / refetch ------------------ //
+  //----------------------------------------------------------------------------------------
+  // Refetch
   useEffect(() => {
     if (refetchKey) {
       fetchData("/consignment/status/all", setPledgeData);
@@ -117,18 +137,28 @@ export default function TicketManager({ refetchKey }) {
       fetchData("/redeem/status/all", setRedeemData);
     }
   }, [refetchKey]);
-  
+  //----------------------------------------------------------------------------------------
+
   return (
     <>
       <div>
         {/* ------------------------- Consignment Ticket Section ------------------------- */}
-        <TicketConsignment pledgeData={pledgeData} handleConsignmentUpdate={handleConsignmentUpdate}/>
+        <TicketConsignment
+          pledgeData={pledgeData}
+          handleConsignmentUpdate={handleConsignmentUpdate}
+        />
 
         {/* ------------------------- Interest Ticket Section ------------------------- */}
-        <TicketInterest interestData={interestData} handleInterestUpdate={handleInterestUpdate}/>
+        <TicketInterest
+          interestData={interestData}
+          handleInterestUpdate={handleInterestUpdate}
+        />
 
         {/* ------------------------- Redeem Ticket Section ------------------------- */}
-        <TicketRedeem redeemData={redeemData} handleRedeemUpdate={handleRedeemUpdate}/>
+        <TicketRedeem
+          redeemData={redeemData}
+          handleRedeemUpdate={handleRedeemUpdate}
+        />
       </div>
     </>
   );

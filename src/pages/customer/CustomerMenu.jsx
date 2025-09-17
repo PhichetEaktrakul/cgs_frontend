@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router";
-import { useUser } from "../../context/UserContext";
+import { useCustomer } from "../../context/CustomerContext";
 import { apiCust } from "../../api/axiosInstance";
 import { AiOutlineGold } from "react-icons/ai";
 import { IoIosArrowForward } from "react-icons/io";
@@ -11,7 +11,7 @@ export default function Menu() {
   const navigate = useNavigate();
   const location = useLocation();
   const token = new URLSearchParams(location.search).get("token");
-  const { user, setUser } = useUser();
+  const { customer, setCustomer } = useCustomer();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -20,14 +20,17 @@ export default function Menu() {
   const handleAgreement = () => {
     apiCust
       .post("/customer/tos/add", {
-        custId: user.custid,
-        firstname: user.firstname,
-        lastname: user.lastname,
-        phonenumber: user.phone,
-        idcard: user.idcard,
-        address: user.address,
+        custId: customer.custid,
+        firstname: customer.firstname,
+        lastname: customer.lastname,
+        phonenumber: customer.phone,
+        idcard: customer.idcard,
+        address: customer.address,
       })
-      .then(() => document.getElementById("tos_modal").close())
+      .then(() => {
+        setError("");
+        document.getElementById("tos_modal").close();
+      })
       .catch(console.error);
   };
   //----------------------------------------------------------------------------------------
@@ -58,7 +61,7 @@ export default function Menu() {
   //----------------------------------------------------------------------------------------
 
   //----------------------------------------------------------------------------------------
-  // Fetch user data from token in URL
+  // Fetch customer data from token in URL
   useEffect(() => {
     if (!token) {
       setError("No token found in the URL.");
@@ -67,39 +70,40 @@ export default function Menu() {
     setLoading(true);
     apiCust
       .get("/json/decode", { params: { token } })
-      .then((res) => setUser(res.data))
+      .then((res) => setCustomer(res.data))
       .catch((err) => {
         console.error(err);
-        setError(err.response?.data || "Failed to fetch user data.");
+        setError(err.response?.data || "Failed to fetch customer data.");
       })
       .finally(() => setLoading(false));
-  }, [token, setUser]);
+  }, [token, setCustomer]);
   //----------------------------------------------------------------------------------------
 
   //----------------------------------------------------------------------------------------
   // Check if customer already accepted the TOS
   useEffect(() => {
-    if (!user?.custid || loading) return;
+    if (!customer?.custid || loading) return;
     apiCust
-      .get(`/customer/tos/${user.custid}`)
+      .get(`/customer/tos/${customer.custid}`)
       .then((res) => {
         if (res.data === false) {
+          setError("TOS not accept yet");
           document.getElementById("tos_modal")?.showModal();
         } else {
           console.log("Customer already registered.");
         }
       })
       .catch((err) => console.error("Error checking TOS status:", err));
-  }, [user?.custid, loading]);
+  }, [customer?.custid, loading]);
 
   return (
     <>
       <Header
         bottom={
           <>
-            {loading && <p>Loading...</p>}
-            {error && <p className="text-red-500">Error: {error}</p>}
-            {user && (
+            {loading && <p className="text-gray-400 text-center text-lg">Loading...</p>}
+            {error && <p className="text-gray-400 text-center text-lg">{error}</p>}
+            {error == "" && customer && (
               <>
                 <div className="menuselect">
                   <MenuButton
@@ -117,24 +121,6 @@ export default function Menu() {
                     remark="หมายเหตุ"
                     route="/redeem"
                   />
-                </div>
-                {/*-----For Decode Debug-----*/}
-                <div className="mt-5 space-y-2 text-gray-100">
-                  <p>
-                    <strong>ID:</strong> {user.custid}
-                  </p>
-                  <p>
-                    <strong>Firstname:</strong> {user.firstname}
-                  </p>
-                  <p>
-                    <strong>Lastname:</strong> {user.lastname}
-                  </p>
-                  <p>
-                    <strong>Idcard:</strong> {user.idcard}
-                  </p>
-                  <p>
-                    <strong>Address:</strong> {user.address}
-                  </p>
                 </div>
               </>
             )}
