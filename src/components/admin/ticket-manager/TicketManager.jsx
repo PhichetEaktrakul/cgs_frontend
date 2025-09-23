@@ -61,8 +61,8 @@ export default function TicketManager({ refetchKey }) {
       method === "approve"
         ? `อนุมัติรายการขายฝาก ID ${pledgeId} เเล้ว!`
         : `ไม่อนุมัติรายการขายฝาก ID ${pledgeId} เเล้ว!`;
-    updateStatus("/consignment/update/status", payload, msg, () =>
-      fetchData("/consignment/status/all", setPledgeData)
+    updateStatus("/consignment/approve/status", payload, msg, () =>
+      fetchData("/consignment/history/all", setPledgeData)
     );
   };
   //----------------------------------------------------------------------------------------
@@ -103,8 +103,8 @@ export default function TicketManager({ refetchKey }) {
       method === "approve"
         ? `อนุมัติรายการต่อดอก ID ${interestId} เเล้ว!`
         : `ไม่อนุมัติรายการต่อดอก ID ${interestId} เเล้ว!`;
-    updateStatus("/interest/update/status", payload, msg, () =>
-      fetchData("/interest/status/all", setInterestData)
+    updateStatus("/interest/approve/status", payload, msg, () =>
+      fetchData("/interest/history/all", setInterestData)
     );
   };
   //----------------------------------------------------------------------------------------
@@ -121,9 +121,9 @@ export default function TicketManager({ refetchKey }) {
   ) => {
     const payload = { transId, pledgeId, goldType, weight, custId, method };
     const msg = method === "approve" ? "อนุมัติเรียบร้อย" : "ปฏิเสธเรียบร้อย";
-    updateStatus("/redeem/update/status", payload, msg, () => {
-      fetchData("/redeem/status/all", setRedeemData);
-      fetchData("/consignment/status/all", setPledgeData);
+    updateStatus("/redeem/approve/status", payload, msg, () => {
+      fetchData("/redeem/history/all", setRedeemData);
+      fetchData("/consignment/history/all", setPledgeData);
     });
   };
   //----------------------------------------------------------------------------------------
@@ -132,9 +132,9 @@ export default function TicketManager({ refetchKey }) {
   // Refetch
   useEffect(() => {
     if (refetchKey) {
-      fetchData("/consignment/status/all", setPledgeData);
-      fetchData("/interest/status/all", setInterestData);
-      fetchData("/redeem/status/all", setRedeemData);
+      fetchData("/consignment/history/all", setPledgeData);
+      fetchData("/interest/history/all", setInterestData);
+      fetchData("/redeem/history/all", setRedeemData);
     }
   }, [refetchKey]);
   //----------------------------------------------------------------------------------------

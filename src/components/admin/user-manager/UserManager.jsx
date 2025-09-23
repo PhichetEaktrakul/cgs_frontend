@@ -17,7 +17,7 @@ export default function UserManager() {
   // Fetch Users
   const fetchUsers = async () => {
     try {
-      const res = await apiAdmin.get("/admin/getall");
+      const res = await apiAdmin.get("/users");
       if (res.status === 200) {
         setUsers(res.data);
       } else {
@@ -59,7 +59,7 @@ export default function UserManager() {
   const deleteUser = async (id) => {
     if (!window.confirm("คุณแน่ใจหรือไม่ที่จะลบผู้ใช้นี้?")) return;
     try {
-      await apiAdmin.delete(`/admin/update/${id}`);
+      await apiAdmin.delete(`/users/${id}`);
       toast.success("ลบผู้ใช้แล้ว");
       fetchUsers();
     } catch (err) {

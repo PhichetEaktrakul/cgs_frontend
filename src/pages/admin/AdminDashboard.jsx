@@ -56,7 +56,7 @@ export default function AdminDashboard() {
   // Fetch Gold RT Price From SignalR
   useEffect(() => {
     apiAdmin
-      .get("/gold-prices/lastest")
+      .get("/gold-prices/latest")
       .then((res) => {
         if (res.data) {
           setPrices(res.data);
@@ -101,8 +101,8 @@ export default function AdminDashboard() {
           }
         };
 
+        /* window.$.connection.hub.url = "https://uatg266.gcaponline.com/signalr"; */
         window.$.connection.hub.url = "https://g266.gcaponline.com/signalr";
-
         window.$.connection.hub
           .start()
           .done(() => {

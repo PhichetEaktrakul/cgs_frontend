@@ -63,10 +63,10 @@ export default function CustomerTable({ selected, prices }) {
     "สถานะ",
   ];
   const endpoints = {
-    monitor: `consignment/status/admin/${selected?.customer_id}`,
-    consignment: `/consignment/status/${selected?.customer_id}`,
-    interest: `/interest/status/${selected?.customer_id}`,
-    redeem: `/redeem/status/${selected?.customer_id}`,
+    monitor: `/consignment/monitor/${selected?.customer_id}`,
+    consignment: `/consignment/history/${selected?.customer_id}`,
+    interest: `/interest/history/${selected?.customer_id}`,
+    redeem: `/redeem/history/${selected?.customer_id}`,
   };
 
   //----------------------------------------------------------------------------------------

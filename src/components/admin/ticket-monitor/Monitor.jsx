@@ -44,7 +44,7 @@ export default function Monitor({ refetchKey, prices }) {
   // Fetch All Customer Pledge Ticket
   const fetchTicket = async () => {
     try {
-      const response = await apiAdmin.get("consignment/status/admin/all");
+      const response = await apiAdmin.get("/consignment/monitor/all");
       setData(response.data);
     } catch (error) {
       console.error("Fetch tickets failed:", error);

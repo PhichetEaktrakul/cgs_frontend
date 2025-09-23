@@ -42,21 +42,24 @@ export default function Consignment() {
     twoMonthsLater.setMonth(today.getMonth() + 2);
 
     try {
-      const [metaRes, goldRes, historyRes] = await Promise.all([
+      const [metaRes, goldRes, historyRes, goldAssnRes] = await Promise.all([
         apiCust.get(`/customer/meta/${custid}`),
         apiCust.get(`/customer/outer/${custid}/gold`),
-        apiCust.get(`/consignment/status/${custid}`),
+        apiCust.get(`/consignment/history/${custid}`),
+        apiCust.get("/gold-assn/latest"),
       ]);
 
       const setting = metaRes.data;
       const gold = goldRes.data;
+      const goldAssn = goldAssnRes.data;
+      const goldSell = parseInt(goldAssn.sellPrice.replace(/,/g, ''), 10);
 
       setTempValue((prev) => ({
         ...prev,
         pledgeId: randomPledgeId,
         customerId: custid,
-        refPrice1: gold.ref_price1 ?? 51395,
-        refPrice2: gold.ref_price2 ?? 53255,
+        refPrice1: goldSell ?? 55905,
+        refPrice2: gold.ref_price2 ?? 58425,
         loanPercent: setting.loan_percent,
         interestRate: setting.interest_rate,
         startDate: today.toISOString(),

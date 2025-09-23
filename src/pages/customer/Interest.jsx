@@ -63,7 +63,7 @@ export default function Interest() {
     try {
       const [intRes, historyRes] = await Promise.all([
         apiCust.get(`/interest/payable/${customer.custid}`),
-        apiCust.get(`/interest/status/${customer.custid}`),
+        apiCust.get(`/interest/history/${customer.custid}`),
       ]);
       setIntList(intRes.data);
       setHistory(historyRes.data);

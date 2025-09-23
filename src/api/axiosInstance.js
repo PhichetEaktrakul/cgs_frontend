@@ -7,3 +7,8 @@ export const apiCust = axios.create({ baseURL: apiUrl });
 
 // Admin API URL
 export const apiAdmin = axios.create({ baseURL: apiUrl });
+
+const token = localStorage.getItem("token");
+if (token) {
+  apiAdmin.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+}

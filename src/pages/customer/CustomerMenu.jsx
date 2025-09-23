@@ -41,7 +41,7 @@ export default function Menu() {
     <>
       <button
         className="w-full px-2 py-3 grid grid-rows-2 grid-flow-col gap-1 cursor-pointer"
-        onClick={() => navigate(`${route}?token=${token}`)}>
+        onClick={() => navigate(route)}>
         <div className="row-span-2 content-center">
           <AiOutlineGold className="text-6xl" />
         </div>
@@ -69,7 +69,7 @@ export default function Menu() {
     }
     setLoading(true);
     apiCust
-      .get("/json/decode", { params: { token } })
+      .get("/token/decode", { params: { token } })
       .then((res) => setCustomer(res.data))
       .catch((err) => {
         console.error(err);

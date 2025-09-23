@@ -43,18 +43,22 @@ export default function InterestHistory({ data }) {
                 {[
                   ["ต่อจาก", item.prev_interest_id],
                   ["เลขที่สัญญา", item.pledge_id],
+                  ["น้ำหนัก", `${item.weight} ${item.gold_type == 1? "บาท":"กิโล"}`],
                   ["อัตราดอกเบี้ย", `${item.old_interest_rate}%`],
                   ["ดอกเบี้ย", FormatNumber(item.pay_interest)],
                   ["ตัดต้น", FormatNumber(item.pay_loan)],
                   ["ยอดชำระ", FormatNumber(item.pay_interest + item.pay_loan)],
                   ["งวด", FormatDate(item.due_date)],
-                  ["วันที่ทำรายการ", FormatDateFull(item.transaction_date)],
                 ].map(([label, value], i) => (
                   <span key={i} className="contents">
                     <span className="text-center pr-1">{label}</span>
                     <span>: {value}</span>
                   </span>
                 ))}
+                <span className="text-center pr-1">วันที่ทำรายการ</span>
+                <span className="col-span-3">
+                  : {FormatDateFull(item.transaction_date)}
+                </span>
               </div>
             ))
           ) : (

@@ -55,7 +55,7 @@ export default function Redeem() {
     try {
       const [redeemRes, historyRes] = await Promise.all([
         apiCust.get(`/redeem/list/${customer.custid}`),
-        apiCust.get(`/redeem/status/${customer.custid}`),
+        apiCust.get(`/redeem/history/${customer.custid}`),
       ]);
 
       setRedeemList(redeemRes.data);
