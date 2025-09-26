@@ -4,8 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --mode development",
     "build": "vite build",
+    "build:docker": "vite build --mode docker",
     "lint": "eslint .",
     "preview": "vite preview"
   },
