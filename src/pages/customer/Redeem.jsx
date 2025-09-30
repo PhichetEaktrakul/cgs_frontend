@@ -1,18 +1,14 @@
 import { useEffect, useState } from "react";
-import { useCustomer } from "../../context/CustomerContext";
 import { apiCust } from "../../api/axiosInstance";
 import toast from "react-hot-toast";
 import Header from "../../components/customer/Header";
 import RedeemCard from "../../components/customer/redeem/RedeemCard";
-import RedeemHistory from "../../components/customer/redeem/RedeemHistory";
 import ModalRedeem from "../../components/customer/redeem/ModalRedeem";
 
 export default function Redeem() {
+  const custid = localStorage.getItem("custid");
   const [redeemList, setRedeemList] = useState([]);
   const [selectedData, setSelectedData] = useState(null);
-  const [history, setHistory] = useState([]);
-
-  const { customer } = useCustomer();
 
   //----------------------------------------------------------------------------------------
   // Select Target Redeem
@@ -53,13 +49,8 @@ export default function Redeem() {
   // Fetch Redeemable List and History
   const fetchData = async () => {
     try {
-      const [redeemRes, historyRes] = await Promise.all([
-        apiCust.get(`/redeem/list/${customer.custid}`),
-        apiCust.get(`/redeem/history/${customer.custid}`),
-      ]);
-
+      const redeemRes = await apiCust.get(`/redeem/list/${custid}`);
       setRedeemList(redeemRes.data);
-      setHistory(historyRes.data);
     } catch (error) {
       console.error(error);
     }
@@ -77,16 +68,7 @@ export default function Redeem() {
           <>
             <p className="text-center text-2xl">ไถ่ถอน</p>
             {/*------------Render Redeemable Consignment List------------*/}
-            <RedeemCard
-              redeemList={redeemList}
-              handleSelectRed={handleSelectRed}
-            />
-
-            <hr className="text-gray-400 my-3" />
-
-            <p>ตรวจสอบสถานะรายการไถ่ถอน</p>
-            {/*------------Display Redeem Transaction History------------*/}
-            <RedeemHistory data={history} />
+            <RedeemCard redeemList={redeemList} handleSelectRed={handleSelectRed} />
 
             {/*------------Open Transaction Redeem Modal------------*/}
             <ModalRedeem selectedData={selectedData} postRedeem={postRedeem} />

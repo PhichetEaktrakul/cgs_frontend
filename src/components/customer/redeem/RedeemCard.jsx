@@ -16,7 +16,7 @@ export default function RedeemCard({ redeemList, handleSelectRed }) {
         {redeemList.map((item) => (
           <div
             key={item.transaction_id}
-            className="grid grid-cols-[40%_60%] gap-x-1 gap-y-1 border-2 border-sky-900 rounded-lg my-3 p-3 text-md">
+            className="grid grid-cols-[40%_60%] gap-x-1 gap-y-1 border-1 border-sky-900 rounded-lg my-3 p-3 text-md">
             <div className="text-end pr-1">เลขที่สัญญา :</div>
             <div>{item.pledge_id}</div>
 

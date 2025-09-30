@@ -1,21 +1,17 @@
 import { useEffect, useState } from "react";
-import { useCustomer } from "../../context/CustomerContext";
 import { apiCust } from "../../api/axiosInstance";
 import toast from "react-hot-toast";
 import Header from "../../components/customer/Header";
 import InterestCard from "../../components/customer/interest/InterestCard";
-import InterestHistory from "../../components/customer/interest/InterestHistory";
 import ModalInterest from "../../components/customer/interest/ModalInterest";
 
 export default function Interest() {
+  const custid = localStorage.getItem("custid");
   const [intList, setIntList] = useState([]);
   const [selectedData, setSelectedData] = useState(null);
   const [isReduce, setIsReduce] = useState(false);
   const [tempValue, setTempValue] = useState({ pay_interest: 0, pay_loan: 0 });
-  const [history, setHistory] = useState([]);
   const [error, setError] = useState(false);
-
-  const { customer } = useCustomer();
 
   //----------------------------------------------------------------------------------------
   // Select Target Interest
@@ -36,7 +32,10 @@ export default function Interest() {
     e.preventDefault();
     setError(false);
 
-    if (tempValue.pay_loan < 0 || selectedData.old_loan_amount - tempValue.pay_loan < 0)
+    if (
+      tempValue.pay_loan < 0 ||
+      selectedData.old_loan_amount - tempValue.pay_loan < 0
+    )
       return setError("errNumber");
     if (selectedData.old_loan_amount - tempValue.pay_loan === 0)
       return setError("errRedeem");
@@ -61,12 +60,9 @@ export default function Interest() {
   // Fetch Customer Gold and History
   const fetchData = async () => {
     try {
-      const [intRes, historyRes] = await Promise.all([
-        apiCust.get(`/interest/payable/${customer.custid}`),
-        apiCust.get(`/interest/history/${customer.custid}`),
-      ]);
+      const intRes = await apiCust.get(`/interest/payable/${custid}`);
+
       setIntList(intRes.data);
-      setHistory(historyRes.data);
     } catch (error) {
       console.error(error);
     }
@@ -85,12 +81,6 @@ export default function Interest() {
             <p className="text-center text-2xl">รายการต่อดอก</p>
             {/*------------Render Payable Interest List------------*/}
             <InterestCard intList={intList} handleSelectInt={handleSelectInt} />
-
-            <hr className="text-gray-400 my-3" />
-
-            <p>ตรวจสอบสถานะรายการต่อดอก</p>
-            {/*------------Display Interest Transaction History------------*/}
-            <InterestHistory data={history} />
 
             {/*------------Open Transaction Interest Modal------------*/}
             <ModalInterest

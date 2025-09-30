@@ -1,21 +1,17 @@
 import { useEffect, useState } from "react";
-import { useCustomer } from "../../context/CustomerContext";
 import { apiCust } from "../../api/axiosInstance";
 import toast from "react-hot-toast";
 import Header from "../../components/customer/Header";
 import ConsignmentBalance from "../../components/customer/consignment/ConsignmentBalance";
 import ConsignmentForm from "../../components/customer/consignment/ConsignmentForm";
-import ConsignmentHistory from "../../components/customer/consignment/ConsignmentHistory";
 import ModalConsignment from "../../components/customer/consignment/ModalConsignment";
 
 export default function Consignment() {
-  const { customer } = useCustomer();
+  const custid = localStorage.getItem("custid");
   const randomPledgeId = Math.floor(Math.random() * 1000); // 0 to 999
-
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [selected, setSelected] = useState("1");
-  const [history, setHistory] = useState([]);
   const [tempValue, setTempValue] = useState({
     pledgeId: 0,
     customerId: 0,
@@ -42,24 +38,23 @@ export default function Consignment() {
     twoMonthsLater.setMonth(today.getMonth() + 2);
 
     try {
-      const [metaRes, goldRes, historyRes, goldAssnRes] = await Promise.all([
+      const [metaRes, goldRes, goldAssnRes] = await Promise.all([
         apiCust.get(`/customer/meta/${custid}`),
         apiCust.get(`/customer/outer/${custid}/gold`),
-        apiCust.get(`/consignment/history/${custid}`),
         apiCust.get("/gold-assn/latest"),
       ]);
 
       const setting = metaRes.data;
       const gold = goldRes.data;
       const goldAssn = goldAssnRes.data;
-      const goldSell = parseInt(goldAssn.sellPrice.replace(/,/g, ''), 10);
+      const goldSell = parseInt(goldAssn.sellPrice.replace(/,/g, ""), 10);
 
       setTempValue((prev) => ({
         ...prev,
         pledgeId: randomPledgeId,
         customerId: custid,
-        refPrice1: goldSell ?? 55905,
-        refPrice2: gold.ref_price2 ?? 58425,
+        refPrice1: goldSell ?? 58950,
+        refPrice2: gold.ref_price2 ?? 59000,
         loanPercent: setting.loan_percent,
         interestRate: setting.interest_rate,
         startDate: today.toISOString(),
@@ -67,8 +62,6 @@ export default function Consignment() {
         goldBalance96: Number(gold.balance96) || 0,
         goldBalance99: Number(gold.balance99) || 0,
       }));
-
-      setHistory(historyRes.data);
     } catch (err) {
       console.error("Failed to fetch consignment data:", err);
     }
@@ -101,7 +94,7 @@ export default function Consignment() {
         toast.success("ทำรายการสำเร็จ!");
         setIsLoading(false);
         document.getElementById("submit_modal").close();
-        fetchConsignmentData(customer?.custid);
+        fetchConsignmentData(custid);
       })
       .catch((err) => {
         toast.error("ทำรายการล้มเหลว!");
@@ -139,8 +132,8 @@ export default function Consignment() {
   //----------------------------------------------------------------------------------------
 
   useEffect(() => {
-    fetchConsignmentData(customer?.custid);
-  }, [customer?.custid]);
+    fetchConsignmentData(custid);
+  }, [custid]);
 
   return (
     <Header
@@ -157,12 +150,6 @@ export default function Consignment() {
             error={error}
             setError={setError}
           />
-
-          <hr className="text-gray-400 my-3" />
-
-          <p>ตรวจสอบสถานะรายการขายฝาก</p>
-          {/*------------Display Consignment Transaction History------------*/}
-          <ConsignmentHistory history={history} />
 
           {/*------------Open Transaction Consignment Modal------------*/}
           <ModalConsignment
