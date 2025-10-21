@@ -8,12 +8,13 @@ import ModalRedeem from "../../components/customer/redeem/ModalRedeem";
 export default function Redeem() {
   const customerId = localStorage.getItem("customerId");
   const [redeemList, setRedeemList] = useState([]);
-  const [selectedData, setSelectedData] = useState(null);
+  const [selectedData, setSelectedData] = useState();
 
   //----------------------------------------------------------------------------------------
   // Select Target Redeem
   const handleSelectRed = (data) => {
     setSelectedData(data);
+    console.log("Selected Redeem Data:", data);
     document.getElementById("redeem_modal").showModal();
   };
   //----------------------------------------------------------------------------------------
