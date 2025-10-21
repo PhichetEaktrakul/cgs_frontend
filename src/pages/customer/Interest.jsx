@@ -6,7 +6,7 @@ import InterestCard from "../../components/customer/interest/InterestCard";
 import ModalInterest from "../../components/customer/interest/ModalInterest";
 
 export default function Interest() {
-  const custid = localStorage.getItem("custid");
+  const customerId = localStorage.getItem("customerId");
   const [intList, setIntList] = useState([]);
   const [selectedData, setSelectedData] = useState(null);
   const [isReduce, setIsReduce] = useState(false);
@@ -39,7 +39,7 @@ export default function Interest() {
       return setError("errNumber");
     if (selectedData.old_loan_amount - tempValue.pay_loan === 0)
       return setError("errRedeem");
-
+console.log(selectedData.interest_id, selectedData.pledge_id, tempValue.pay_interest, tempValue.pay_loan);
     try {
       await apiCust.post("/interest/create", {
         interestId: selectedData.interest_id,
@@ -60,7 +60,7 @@ export default function Interest() {
   // Fetch Customer Gold and History
   const fetchData = async () => {
     try {
-      const intRes = await apiCust.get(`/interest/payable/${custid}`);
+      const intRes = await apiCust.get(`/interest/payable/${customerId}`);
 
       setIntList(intRes.data);
     } catch (error) {

@@ -22,9 +22,9 @@ export default function ConsignmentHistory({ filteredData }) {
                 ["ประเภททอง", GoldTypeText(item.gold_type)],
                 [
                   "น้ำหนัก",
-                  `${item.weight} ${item.gold_type === 1 ? "บาท" : "กิโล"}`,
+                  `${item.weight} ${item.gold_type === 1 ? "กิโล" : "บาท"}`,
                 ],
-                ["วงเงิน (%)", `${(item.loan_percent * 100).toFixed(2)}%`],
+                ["วงเงิน (%)", `${(item.loan_percent).toFixed(2)}%`],
                 ["วงเงินที่ได้", FormatNumber(item.loan_amount)],
                 ["ราคาอ้างอิง", item.ref_price.toLocaleString()],
                 ["อัตราดอกเบี้ย", `${item.interest_rate}%`],

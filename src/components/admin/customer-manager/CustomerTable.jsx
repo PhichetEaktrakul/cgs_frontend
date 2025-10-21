@@ -63,7 +63,7 @@ export default function CustomerTable({ selected, prices }) {
     "สถานะ",
   ];
   const endpoints = {
-    monitor: `/consignment/monitor/${selected?.customer_id}`,
+    monitor: `/dashboard/monitor/${selected?.customer_id}`,
     consignment: `/consignment/history/${selected?.customer_id}`,
     interest: `/interest/history/${selected?.customer_id}`,
     redeem: `/redeem/history/${selected?.customer_id}`,
@@ -95,6 +95,8 @@ export default function CustomerTable({ selected, prices }) {
         return "อนุมัติ";
       case "redeem":
         return "ไถ่ถอน";
+      case "redeempay":
+        return "รอไถ่ถอน";
       case "paid":
         return "อนุมัติ";
       case "approve":
@@ -113,7 +115,7 @@ export default function CustomerTable({ selected, prices }) {
   const filteredData =
     filter === "none" ? data : data.filter((item) => item.status === filter);
   //----------------------------------------------------------------------------------------
-  
+
   return (
     <>
       {/* ---------------------- Select Table & Filter ---------------------- */}
@@ -140,6 +142,7 @@ export default function CustomerTable({ selected, prices }) {
             <>
               <option value="pending">รออนุมัติ</option>
               <option value="active">อนุมัติ</option>
+              <option value="redeempay">รอไถ่ถอน</option>
               <option value="redeem">ไถ่ถอน</option>
               <option value="reject">ไม่อนุมัติ</option>
               <option value="expire">หมดอายุ</option>
@@ -253,13 +256,13 @@ export default function CustomerTable({ selected, prices }) {
                     <tr key={item.transaction_id}>
                       <td>{item.pledge_id}</td>
                       {item.gold_type == 1 ? (
-                        <td>{item.weight} บาท</td>
-                      ) : (
                         <td>{item.weight} กิโล</td>
+                      ) : (
+                        <td>{item.weight} บาท</td>
                       )}
                       <td>{GoldTypeText(item.gold_type)}</td>
                       <td>{FormatNumber(item?.ref_price)}</td>
-                      <td>{(item.loan_percent * 100).toFixed(2)}%</td>
+                      <td>{((item?.loan_percent ?? 0).toFixed(2))}%</td>
                       <td>{FormatNumber(item.loan_amount)}</td>
                       <td>{item.interest_rate}%</td>
                       <td>{FormatDate(item.start_date)}</td>

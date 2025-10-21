@@ -67,8 +67,8 @@ const CalRemainDays = (endDate) => {
 //----------------------------------------------------------------------------------------
 // Calculate Function
 const GoldTypeText = (type) => {
-  if (type === 2) return "99.9%";
-  if (type === 1) return "96.5%";
+  if (type === 1) return "99.90%";
+  if (type === 2) return "96.50%";
   return "-";
 };
 //----------------------------------------------------------------------------------------
@@ -77,13 +77,13 @@ const GoldTypeText = (type) => {
 // Calculate Function
 const CalFunctions = (item, prices) => {
   const adjustedWeight =
-    item.gold_type === 1 ? item.weight : item.weight * 66.67;
+    item.gold_type === 1 ? item.weight * 66.67 : item.weight ;
   const avgLoan =
     (item.remain_loan_amount + item.sum_pay_interest) / adjustedWeight;
   const gainLoss =
     item.gold_type === 1
-      ? prices.gold96_sell - avgLoan
-      : prices.gold99_sell - avgLoan;
+      ? prices.gold99_sell - avgLoan
+      : prices.gold96_sell - avgLoan;
   return { avgLoan, gainLoss, adjustedWeight };
 };
 //----------------------------------------------------------------------------------------

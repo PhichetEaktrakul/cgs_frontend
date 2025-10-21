@@ -74,9 +74,9 @@ export default function TicketInterest({ interestData, handleInterestUpdate }) {
                     key={item.interest_id}
                     className={`${
                       item.gold_type === 1
-                        ? "bg-yellow-100"
-                        : item.gold_type === 2
                         ? "bg-blue-100"
+                        : item.gold_type === 2
+                        ? "bg-yellow-100"
                         : ""
                     }`}>
                     <td>{item.interest_id}</td>

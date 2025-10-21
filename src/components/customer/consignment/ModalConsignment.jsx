@@ -13,14 +13,9 @@ export default function ModalConsignment({
           <p className="font-bold text-lg mb-2">ยืนยันการทำรายการ</p>
 
           <p className="py-4">
-            เลขที่สัญญา :{" "}
-            <span className="bg-amber-100 mx-3 px-2 py-1 rounded">{tempValue.pledgeId}</span>
-          </p>
-
-          <p className="py-4">
             จำนวนที่ขายฝาก :{" "}
             <span className="bg-amber-100 mx-3 px-2 py-1 rounded">{tempValue.weight}</span>
-            {selected == 1 ? "บาท" : "กิโล"}
+            {selected == 1 ? "กิโล" : "บาท"}
           </p>
 
           <p className="py-4">
@@ -33,6 +28,12 @@ export default function ModalConsignment({
             ดอกเบี้ยที่ต้องชำระ :{" "}
             <span className="bg-amber-100 mx-3 px-2 py-1 rounded">{FormatNumber(tempValue.interestPay)}</span>
             {" "}บาท
+          </p>
+
+          <p className="py-4">
+            ระยะสัญญา :{" "}
+            <span className="bg-amber-100 mx-3 px-2 py-1 rounded">{tempValue.numPay}</span>
+            {" "}เดือน
           </p>
 
           <p className="py-4">

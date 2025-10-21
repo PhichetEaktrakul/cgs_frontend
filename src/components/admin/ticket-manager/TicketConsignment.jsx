@@ -96,19 +96,19 @@ export default function TicketConsignment({ pledgeData, handleConsignmentUpdate 
                     key={item.transaction_id}
                     className={`${
                       item.gold_type === 1
-                        ? "bg-yellow-100"
-                        : item.gold_type === 2
                         ? "bg-blue-100"
+                        : item.gold_type === 2
+                        ? "bg-yellow-100"
                         : ""
                     }`}>
                     <td>{item.pledge_id}</td>
                     <td>{item.customer_id}</td>
                     <td>
-                      {item.weight} {item.gold_type == 1 ? "บาท" : "กิโล"}
+                      {item.weight} {item.gold_type == 1 ? "กิโล" : "บาท"}
                     </td>
                     <td>{GoldTypeText(item.gold_type)}</td>
                     <td>{FormatNumber(item.ref_price)}</td>
-                    <td>{(item.loan_percent * 100).toFixed(2)}%</td>
+                    <td>{(item.loan_percent).toFixed(2)}%</td>
                     <td>{FormatNumber(item.loan_amount)}</td>
                     <td>{item.interest_rate}%</td>
                     <td>{FormatDate(item.start_date)}</td>

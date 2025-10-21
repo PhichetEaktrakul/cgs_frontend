@@ -39,9 +39,9 @@ export default function MonitorFocus({
                       key={item.pledge_id}
                       className={`text-[14px]! ${
                         item.gold_type === 1
-                          ? "bg-yellow-100"
-                          : item.gold_type === 2
                           ? "bg-blue-100"
+                          : item.gold_type === 2
+                          ? "bg-yellow-100"
                           : ""
                       }`}>
                       <td>

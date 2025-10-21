@@ -6,13 +6,8 @@ export default function ModalRedeem({ selectedData, postRedeem }) {
       {/*-----Redeem Modal-----*/}
       <dialog id="redeem_modal" className="modal">
         <div className="modal-box">
-          <p className="font-bold text-xl mb-2">ยืนยันการทำรายการไถ่ถอน</p>
-
-          <p className="py-4">
-            รายการสัญญาเลขที่ :{" "}
-            <span className="bg-amber-100 mx-3 px-2 py-1 rounded">
-              {selectedData?.pledge_id}
-            </span>
+          <p className="font-bold text-lg mb-2">
+            ทำรายการไถ่ถอน : {selectedData?.pledge_id}
           </p>
 
           <p className="py-4">
@@ -20,7 +15,27 @@ export default function ModalRedeem({ selectedData, postRedeem }) {
             <span className="bg-amber-100 mx-3 px-2 py-1 rounded">
               {selectedData?.weight}
             </span>
-            {selectedData?.gold_type == "1" ? "บาท" : "กิโล"}
+            {selectedData?.gold_type == "1" ? "กิโล" : "บาท"}
+          </p>
+
+          <p className="py-4">
+            เงินต้นชำระ :{" "}
+            <span className="bg-amber-100 mx-3 px-2 py-1 rounded">
+              {FormatNumber(selectedData?.remain_loan_amount)}
+            </span>
+            บาท
+          </p>
+
+          <p className="py-4">
+            ดอกเบี้ยชำระ :{" "}
+            <span className="bg-amber-100 mx-3 px-2 py-1 rounded">
+              {FormatNumber(
+                (selectedData?.remain_loan_amount *
+                  selectedData?.interest_rate) /
+                  100
+              )}
+            </span>
+            บาท
           </p>
 
           <p className="py-4">

@@ -12,12 +12,19 @@ export default function UserManager() {
     rePassword: "",
     role: "admin",
   });
-
+  const [config, setConfig] = useState({
+    id: "",
+    loanPercent: "",
+    interestRate: "",
+    numPay: "",
+  });
+  const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
   //----------------------------------------------------------------------------------------
   // Fetch Users
   const fetchUsers = async () => {
     try {
-      const res = await apiAdmin.get("/users");
+      const res = await apiAdmin.get("/dashboard/user");
       if (res.status === 200) {
         setUsers(res.data);
       } else {
@@ -59,7 +66,7 @@ export default function UserManager() {
   const deleteUser = async (id) => {
     if (!window.confirm("คุณแน่ใจหรือไม่ที่จะลบผู้ใช้นี้?")) return;
     try {
-      await apiAdmin.delete(`/users/${id}`);
+      await apiAdmin.delete(`/dashboard/user/${id}`);
       toast.success("ลบผู้ใช้แล้ว");
       fetchUsers();
     } catch (err) {
@@ -70,6 +77,56 @@ export default function UserManager() {
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  // ✅ Fetch config when mounted
+  useEffect(() => {
+    const fetchConfig = async () => {
+      try {
+        const res = await apiAdmin.get("/dashboard/config");
+        if (res.data.length > 0) {
+          const cfg = res.data[0];
+          setConfig({
+            id: cfg.id,
+            loanPercent: cfg.loan_percent,
+            interestRate: cfg.interest_rate,
+            numPay: cfg.num_pay,
+          });
+        }
+      } catch (err) {
+        console.error("Error fetching config:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchConfig();
+  }, []);
+
+  // ✅ 2. Handle input changes
+  const handleConfigChange = (e) => {
+    const { name, value } = e.target;
+    setConfig((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // ✅ Handle update click
+  const handleUpdate = async () => {
+    if (!config.id) return alert("No config loaded!");
+
+    setUpdating(true);
+    try {
+      const res = await apiAdmin.put("/dashboard/config", {
+        loanPercent: parseFloat(config.loanPercent),
+        interestRate: parseFloat(config.interestRate),
+        numPay: parseInt(config.numPay),
+      });
+      toast.success(`อัปเดตค่าเริ่มต้นสำเร็จ!`);
+    } catch (err) {
+      console.error("Update error:", err);
+      alert("เกิดข้อผิดพลาดในการอัปเดต");
+    } finally {
+      setUpdating(false);
+    }
   };
 
   return (
@@ -160,7 +217,9 @@ export default function UserManager() {
                 </tr>
               ) : (
                 users.map((u) => (
-                  <tr key={u.user_id} className="hover:bg-gray-50 even:bg-amber-50">
+                  <tr
+                    key={u.user_id}
+                    className="hover:bg-gray-50 even:bg-amber-50">
                     <td>{u.user_id}</td>
                     <td>{u.username}</td>
                     <td>{FormatDateFull(u.created_at)}</td>
@@ -180,6 +239,71 @@ export default function UserManager() {
           </table>
         </fieldset>
       </div>
+
+      <fieldset className="fieldset border border-sky-900 shadow-md p-3 rounded-md overflow-auto row-span-1 mb-3 max-w-[1500px]">
+        <legend className="fieldset-legend text-2xl text-sky-900">
+          ตั้งค่าเริ่มต้น
+        </legend>
+
+        <div className="flex flex-wrap">
+          {/* วงเงิน */}
+          <div className="flex items-center mx-3 relative">
+            <p className="mr-2">วงเงิน</p>
+            <div className="relative">
+              <input
+                type="text"
+                name="loanPercent"
+                value={config.loanPercent}
+                onChange={handleConfigChange}
+                className="bg-amber-50 border border-sky-700 rounded px-2 w-[120px] text-lg pr-6" // add pr-6 for space
+              />
+              <span className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-700">
+                %
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center mx-3 relative">
+            <p className="w-[90px] mr-1">อัตราดอกเบี้ย</p>
+            <div className="relative">
+              <input
+                type="text"
+                name="interestRate"
+                value={config.interestRate}
+                onChange={handleConfigChange}
+                className="bg-amber-50 border border-sky-700 rounded px-2 w-[120px] text-lg pr-6"
+              />
+              <span className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-700">
+                %
+              </span>
+            </div>
+          </div>
+
+          {/* จำนวนงวด */}
+          <div className="flex items-center mx-3 mb-2">
+            <p className="w-[90px] mr-1">จำนวนงวด</p>
+            <input
+              type="number"
+              name="numPay"
+              value={config.numPay}
+              onChange={handleConfigChange}
+              className="bg-amber-50 border border-sky-700 rounded px-2 w-[100px] text-md text-lg"
+            />
+          </div>
+
+          {/* ปุ่มยืนยัน */}
+          <div className="flex items-center mx-3 mb-2">
+            <button
+              onClick={handleUpdate}
+              disabled={updating}
+              className={`${
+                updating ? "bg-gray-400" : "bg-sky-700 hover:bg-sky-800"
+              } text-white px-4 py-1 rounded cursor-pointer text-lg`}>
+              {updating ? "กำลังอัปเดต..." : "ยืนยัน"}
+            </button>
+          </div>
+        </div>
+      </fieldset>
     </>
   );
 }

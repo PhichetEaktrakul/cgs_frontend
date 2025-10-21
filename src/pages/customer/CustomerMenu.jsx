@@ -5,12 +5,13 @@ import { GiGoldBar } from "react-icons/gi";
 import { FormatDate, FormatNumber, GoldTypeText } from "../../utility/function";
 import Header from "../../components/customer/Header";
 import ModalTOS from "../../components/customer/ModalTOS";
+import { HiOutlineDocumentMinus } from "react-icons/hi2";
 
 export default function Menu() {
   const navigate = useNavigate();
   const location = useLocation();
   const token = new URLSearchParams(location.search).get("token");
-  const [customer, setCustomer] = useState();
+  const [customer, setCustomer] = useState(null);
   const [consignList, setConsignList] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,7 +31,8 @@ export default function Menu() {
           params: { token },
         });
         setCustomer(data);
-        fetchConsignList(data.custid);
+        fetchConsignList(data.customerId);
+        localStorage.setItem("customerId", data.customerId);
       } catch (err) {
         setError(err.response?.data || "Failed to fetch customer data.");
       } finally {
@@ -45,30 +47,30 @@ export default function Menu() {
   //----------------------------------------------------------------------------------------
   // Check if customer accepted TOS
   useEffect(() => {
-    if (!customer?.custid || loading) return;
+    if (!customer?.customerId || loading) return;
 
     const checkTos = async () => {
       try {
-        const { data } = await apiCust.get(`/customer/tos/${customer.custid}`);
+        const { data } = await apiCust.get(`/tos/check/${customer.customerId}`);
         if (!data) {
-          setError("TOS not accepted yet");
+          setError("กรุณากดยอมรับข้อกำหนดการใช้บริการ");
           document.getElementById("tos_modal")?.showModal();
         }
       } catch (err) {
-        console.error("Error checking TOS status:", err);
+        console.error("เกิดข้อผิดพลาด:", err);
       }
     };
 
     checkTos();
-  }, [customer?.custid, loading]);
+  }, [customer?.customerId, loading]);
   //----------------------------------------------------------------------------------------
 
   //----------------------------------------------------------------------------------------
   // Handle TOS agreement
   const handleAgreement = async () => {
     try {
-      await apiCust.post("/customer/tos/add", {
-        custId: customer.custid,
+      await apiCust.post("/tos/add", {
+        customerId: customer.customerId,
         firstname: customer.firstname,
         lastname: customer.lastname,
         phonenumber: customer.phone,
@@ -76,8 +78,7 @@ export default function Menu() {
         address: customer.address,
       });
       setError("");
-      localStorage.setItem("custid", customer.custid);
-      fetchConsignList(customer.custid);
+      fetchConsignList(customer.customerId);
       document.getElementById("tos_modal")?.close();
     } catch (err) {
       console.error("Error adding TOS:", err);
@@ -87,9 +88,9 @@ export default function Menu() {
 
   //----------------------------------------------------------------------------------------
   // Fetch consignment list
-  const fetchConsignList = async (custid) => {
+  const fetchConsignList = async (customerId) => {
     try {
-      const { data } = await apiCust.get(`/consignment/history/${custid}`);
+      const { data } = await apiCust.get(`/consignment/history/${customerId}`);
       setConsignList(data);
     } catch (err) {
       console.error("Error fetching consign list:", err);
@@ -103,7 +104,7 @@ export default function Menu() {
     <div
       className="border border-[#dabe96] rounded-lg flex p-3 bg-linear-to-r from-[#dabe96] to-[#f8e0be] cursor-pointer"
       onClick={onClick}>
-      <GiGoldBar className="mr-2 text-2xl" />
+      <GiGoldBar className="mr-2 text-2xl text-[#ac8e65]" />
       <span>{text}</span>
     </div>
   );
@@ -130,8 +131,9 @@ export default function Menu() {
                 {activeConsignList.length > 0 ? (
                   <>
                     <p className="text-xl mt-4">
-                      รายการขายฝาก : {activeConsignList.length}
+                      รายการขายฝาก : {activeConsignList.length} รายการ
                     </p>
+
                     <div className="h-[500px] overflow-x-auto">
                       {activeConsignList.map((item) => (
                         <div
@@ -151,16 +153,14 @@ export default function Menu() {
                             <span>
                               :{" "}
                               {`${item.weight} ${
-                                item.gold_type === 1 ? "บาท" : "กิโล"
+                                item.gold_type === 1 ? "กิโล" : "บาท"
                               }`}
                             </span>
                           </span>
 
                           <span className="contents">
                             <span className="text-center pr-1">วงเงิน (%)</span>
-                            <span>
-                              : {(item.loan_percent * 100).toFixed(2)}%
-                            </span>
+                            <span>: {item.loan_percent.toFixed(2)}%</span>
                           </span>
 
                           <span className="contents">
@@ -202,9 +202,16 @@ export default function Menu() {
                     </div>
                   </>
                 ) : (
-                  <p className="text-xl mt-4">รายการขายฝาก : {activeConsignList.length}</p>
+                  <>
+                    <p className="text-xl mt-4">
+                      รายการขายฝาก : {activeConsignList.length} รายการ
+                    </p>
+                    <div className="items-center justify-center flex text-gray-200 text-6xl my-10">
+                      <HiOutlineDocumentMinus />
+                    </div>
+                  </>
                 )}
-                
+
                 {/* ---------- Menu Buttons ---------- */}
                 <div className="h-[200px]">
                   <p className="text-xl mt-3">ทำรายการ</p>

@@ -57,6 +57,8 @@ export default function TicketManager({ refetchKey }) {
       loanAmount,
       method,
     };
+    console.log("reach here");
+    console.log(payload);
     const msg =
       method === "approve"
         ? `อนุมัติรายการขายฝาก ID ${pledgeId} เเล้ว!`
@@ -99,6 +101,8 @@ export default function TicketManager({ refetchKey }) {
       intRate,
       method,
     };
+    console.log("reach here");
+    console.log(payload);
     const msg =
       method === "approve"
         ? `อนุมัติรายการต่อดอก ID ${interestId} เเล้ว!`
@@ -115,11 +119,13 @@ export default function TicketManager({ refetchKey }) {
     transId,
     pledgeId,
     goldType,
+    intPaid,
+    prinPaid,
     weight,
     custId,
     method
   ) => {
-    const payload = { transId, pledgeId, goldType, weight, custId, method };
+    const payload = { transId, pledgeId, goldType, intPaid, prinPaid, weight, custId, method };
     const msg = method === "approve" ? "อนุมัติเรียบร้อย" : "ปฏิเสธเรียบร้อย";
     updateStatus("/redeem/approve/status", payload, msg, () => {
       fetchData("/redeem/history/all", setRedeemData);

@@ -32,7 +32,7 @@ export default function InterestCard({ intList, handleSelectInt }) {
         {intList.map((item) => (
           <div
             key={item.interest_id}
-            className="grid grid-cols-3 gap-x-1 gap-y-1 border-2 border-sky-900 rounded-lg my-3 p-3 text-md">
+            className="grid grid-cols-3 gap-x-1 gap-y-1 border-1 border-sky-900 rounded-lg my-3 p-3 text-md">
             <div className="text-end pr-1">เลขที่ต่อดอก :</div>
             <div>{item.interest_id}</div>
             <div className="text-end">
@@ -44,10 +44,10 @@ export default function InterestCard({ intList, handleSelectInt }) {
 
             <div className="text-end pr-1">น้ำหนัก :</div>
             <div className="col-span-2">
-              {item.weight} {item.gold_type == "1" ? "บาท" : "กิโล"}
+              {item.weight} {item.gold_type == "1" ? "กิโล" : "บาท"}
             </div>
 
-            <div className="text-end pr-1">ดอกเบี้ย :</div>
+            <div className="text-end pr-1">ดอกเบี้ยชำระ :</div>
             <div className="col-span-2">
               {FormatNumber(
                 (item.old_loan_amount * item.old_interest_rate) / 100

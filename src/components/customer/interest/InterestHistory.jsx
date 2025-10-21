@@ -13,7 +13,7 @@ export default function InterestHistory({ filteredData }) {
           filteredData.map((item) => (
             <div
               key={item.transaction_id}
-              className="grid grid-cols-[30%_20%_30%_20%] gap-y-1 border border-[#dabe96] rounded-lg my-3 p-3 text-[12px]">
+              className="grid grid-cols-[20%_30%_20%_30%] gap-y-1 border border-[#dabe96] rounded-lg my-3 p-3 text-[12px]">
               <p className="col-span-4 font-bold">
                 ต่อดอกเลขที่ : {item.interest_id}
               </p>
@@ -22,7 +22,7 @@ export default function InterestHistory({ filteredData }) {
                 ["เลขที่สัญญา", item.pledge_id],
                 [
                   "น้ำหนัก",
-                  `${item.weight} ${item.gold_type == 1 ? "บาท" : "กิโล"}`,
+                  `${item.weight} ${item.gold_type == 1 ? "กิโล" : "บาท"}`,
                 ],
                 ["อัตราดอกเบี้ย", `${item.old_interest_rate}%`],
                 ["ดอกเบี้ย", FormatNumber(item.pay_interest)],

@@ -6,7 +6,7 @@ import InterestHistory from "../../components/customer/interest/InterestHistory"
 import RedeemHistory from "../../components/customer/redeem/RedeemHistory";
 
 export default function History() {
-  const custid = localStorage.getItem("custid");
+  const customerId = localStorage.getItem("customerId");
   const [history, setHistory] = useState([]);
   const [activeTab, setActiveTab] = useState("pending");
   const [selectedType, setSelectedType] = useState("ขายฝาก");
@@ -30,32 +30,32 @@ export default function History() {
 
   // Load default History data
   useEffect(() => {
-    fetchConsign(custid);
-  }, [custid]);
+    fetchConsign(customerId);
+  }, [customerId]);
 
   //----------------------------------------------------------------------------------------
   // Create new consignment
-  const fetchConsign = async (custid) => {
+  const fetchConsign = async (customerId) => {
     try {
-      const { data } = await apiCust.get(`/consignment/history/${custid}`);
+      const { data } = await apiCust.get(`/consignment/history/${customerId}`);
       setHistory(data);
     } catch (err) {
       console.log(err.response?.data || "Failed to fetch consignment history.");
     }
   };
 
-  const fetchInterest = async (custid) => {
+  const fetchInterest = async (customerId) => {
     try {
-      const { data } = await apiCust.get(`/interest/history/${custid}`);
+      const { data } = await apiCust.get(`/interest/history/${customerId}`);
       setHistory(data);
     } catch (err) {
       console.log(err.response?.data || "Failed to fetch Interest history.");
     }
   };
 
-  const fetchRedeem = async (custid) => {
+  const fetchRedeem = async (customerId) => {
     try {
-      const { data } = await apiCust.get(`/redeem/history/${custid}`);
+      const { data } = await apiCust.get(`/redeem/history/${customerId}`);
       setHistory(data);
     } catch (err) {
       console.log(err.response?.data || "Failed to fetch Redeem history.");
@@ -70,9 +70,9 @@ export default function History() {
     setHistory([]);
     setActiveTab("pending");
 
-    if (value === "ขายฝาก") fetchConsign(custid);
-    if (value === "ต่อดอก") fetchInterest(custid);
-    if (value === "ไถ่ถอน") fetchRedeem(custid);
+    if (value === "ขายฝาก") fetchConsign(customerId);
+    if (value === "ต่อดอก") fetchInterest(customerId);
+    if (value === "ไถ่ถอน") fetchRedeem(customerId);
   };
   //----------------------------------------------------------------------------------------
 

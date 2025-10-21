@@ -25,7 +25,7 @@ export default function RedeemCard({ redeemList, handleSelectRed }) {
 
             <div className="text-end pr-1">น้ำหนัก :</div>
             <div>
-              {item.weight} {item.gold_type == "1" ? "บาท" : "กิโล"}
+              {item.weight} {item.gold_type == "1" ? "กิโล" : "บาท"}
             </div>
 
             <div className="text-end pr-1">ดอกเบี้ยที่ต้องชำระ :</div>

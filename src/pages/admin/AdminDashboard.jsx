@@ -136,7 +136,7 @@ export default function AdminDashboard() {
   //----------------------------------------------------------------------------------------
   
   useEffect(() => {
-    apiAdmin.put("/consignment/open-market")
+    apiAdmin.put("/dashboard/open-market")
       .then(res => console.log(res.data))
       .catch(err => console.error(err));
   }, []);
@@ -214,7 +214,7 @@ export default function AdminDashboard() {
           type="radio"
           name="my_tabs_3"
           className={`tab hover:text-yellow-400 ${activeTab === "UserManager" ? "pointer-events-none" : ""} `}
-          aria-label="User Manager"
+          aria-label="Config"
           checked={activeTab === "UserManager"}
           onChange={() => handleTabChange("UserManager")}
         />

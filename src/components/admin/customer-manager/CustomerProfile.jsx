@@ -21,7 +21,7 @@ export default function CustomerProfile({ selected ,prices}) {
   //  Load selected customer Meta
   useEffect(() => {
     if (selected) {
-      const loanP = selected.loan_percent * 100;
+      const loanP = selected.loan_percent;
       const intR = selected.interest_rate;
 
       setRates({
@@ -49,10 +49,10 @@ export default function CustomerProfile({ selected ,prices}) {
     try {
       const body = {
         customerId: selected.customer_id,
-        loanPercent: rates.loanPercentEdit / 100,
+        loanPercent: rates.loanPercentEdit,
         interestRate: rates.interestRateEdit,
       };
-      await apiAdmin.put("/customer/meta", body);
+      await apiAdmin.put("/customer/initial", body);
       toast.success("เเก้ไขข้อมูลสำเร็จ");
 
       // update originals

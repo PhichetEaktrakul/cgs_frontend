@@ -58,7 +58,7 @@ export default function ModalInterest({
 
               <p>
                 น้ำหนัก : {selectedData?.weight}{" "}
-                {selectedData?.gold_type == "1" ? "บาท" : "กิโล"}
+                {selectedData?.gold_type == "1" ? "กิโล" : "บาท"}
               </p>
 
               <div className="my-2">

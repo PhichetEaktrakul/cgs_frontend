@@ -3,10 +3,10 @@ import { Link } from "react-router";
 export default function InitialPage() {
   return (
     <>
-      {/*-----สำหรับทดสอบเท่านั้น-----*/}
+      {/* ---------- สำหรับทดสอบเท่านั้น ---------- */}
       <div className="flex justify-center items-center h-[100vh]">
         <div className="grid grid-cols-1 grid-rows-2 lg:grid-cols-2 lg:grid-rows-1 gap-5">
-          {/*-----customer-----*/}
+          {/* ---------- customer ---------- */}
           <fieldset className="fieldset border border-sky-900 shadow-md p-3 rounded-md">
             <legend className="fieldset-legend text-2xl text-sky-900">
               ส่วนของ Customer
@@ -16,7 +16,7 @@ export default function InitialPage() {
                 to={{
                   pathname: "/menu",
                   search:
-                    "?token=93rxWSwad3ZxA9X2g89EOtEkA4l6CMTQZGgShNO6g03uBVq7q4NS1UdiyLlKBef1mplcMglktPHRSJWeUV0l9uCl3pof9HieEC34uOL6FZaR3y5YA8tzKhsOJgmSLEctwtdjt4Ni87ibFygQ%2BODrag%3D%3D",
+                    "?token=AfsK1UKJsSTHLsRDG78ifi3ljOamuB%2BYr5b1KiLLQ1ODUSZSNK%2BsiK0iwMq8ccGF1dkrSy0ax%2FIBE8Nvfg2LkEtUIRryT0xDyHdYRrMn1TFISpU%2BVs458WaeEqLXeuZ1VITngbP%2F8i6LGj5qlPBs3C7HFWhyJVTPmrR4Ui%2BK7W8%3D",
                 }}
                 className="bg-linear-to-l from-sky-600 to-sky-700 text-white text-lg w-[120px] h-[40px] rounded text-center content-center shadow-md">
                 ลูกค้า ID 1
@@ -25,14 +25,14 @@ export default function InitialPage() {
                 to={{
                   pathname: "/menu",
                   search:
-                    "?token=rZ8L6ZgzKpf8SZVIBGVk9Cijq3D2SEfy64z4Ht9yxPfFRtzJhO6fEkFf28JceoOrfPZqbs2H%2BJFiuajJGJ%2BkCyEvkk9B5Ps7D8yslQBn%2F7pP0jRm%2B2ZwYZA9ZGp3gjY%2FZLFkdX3dt1kWPDrgmLYEfw%3D%3D",
+                    "?token=AfsK1UKJsSTHLsRDG78ifhmZx7BZqB4ye3Bf04Ah6B6jQDKZBQ%2FyWkEYlXqcEmoj8DzaTTM%2FG%2BAOsZK1XWwijJOlAhfU3Rj8FLq96LU5uap8rv2IAeNqeK49Zn4vtcjiWQcJNznGNA3WoeSHbiUNIih3Q4UtwUTj%2B0YktT05hKY%3D",
                 }}
                 className="bg-linear-to-l from-sky-600 to-sky-700 text-white text-lg w-[120px] h-[40px] rounded text-center content-center shadow-md">
                 ลูกค้า ID 2
               </Link>
             </div>
           </fieldset>
-          {/*-----backoffice-----*/}
+          {/* ---------- backoffice ---------- */}
           <fieldset className="fieldset border border-sky-900 shadow-md p-3 rounded-md">
             <legend className="fieldset-legend text-2xl text-sky-900">
               ส่วนของ Backoffice

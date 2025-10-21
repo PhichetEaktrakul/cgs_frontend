@@ -16,14 +16,16 @@ export default function TicketRedeem({ redeemData, handleRedeemUpdate }) {
     "ดอกเบี้ย",
     "เงินต้น",
     "ชำระรวม",
-    "วันที่ทำรายการ"
+    "วันที่ทำรายการ",
   ];
   const filteredData = redeemData.filter((item) => item.status === activeTab);
 
   return (
     <>
       <fieldset className="fieldset w-[1300px] border border-sky-900 shadow-md p-3 rounded-md row-span-1 mt-3">
-        <legend className="fieldset-legend text-2xl text-sky-900">รายการไถ่ถอน</legend>
+        <legend className="fieldset-legend text-2xl text-sky-900">
+          รายการไถ่ถอน
+        </legend>
 
         {/*------------Tabs------------*/}
         <div className="flex justify-center mt-2">
@@ -63,7 +65,9 @@ export default function TicketRedeem({ redeemData, handleRedeemUpdate }) {
           <table className="table w-full text-center">
             <thead>
               <tr className="bg-sky-700 text-white">
-                {column.map((col) => (<th key={col}>{col}</th>))}
+                {column.map((col) => (
+                  <th key={col}>{col}</th>
+                ))}
                 <th></th>
                 <th></th>
               </tr>
@@ -75,16 +79,16 @@ export default function TicketRedeem({ redeemData, handleRedeemUpdate }) {
                     key={item.redeem_id}
                     className={`${
                       item.gold_type === 1
-                        ? "bg-yellow-100"
-                        : item.gold_type === 2
                         ? "bg-blue-100"
+                        : item.gold_type === 2
+                        ? "bg-yellow-100"
                         : ""
                     }`}>
                     <td>{item.redeem_id}</td>
                     <td>{item.customer_id}</td>
                     <td>{item.pledge_id}</td>
                     <td>
-                      {item.weight} {item.gold_type == 1 ? "บาท" : "กิโล"}
+                      {item.weight} {item.gold_type == 1 ? "กิโล" : "บาท"}
                     </td>
                     <td>{GoldTypeText(item.gold_type)}</td>
                     <td>{FormatNumber(item.interest_paid)}</td>
@@ -104,6 +108,8 @@ export default function TicketRedeem({ redeemData, handleRedeemUpdate }) {
                                 item.transaction_id,
                                 item.pledge_id,
                                 item.gold_type,
+                                item.interest_paid,
+                                item.principal_paid,
                                 item.weight,
                                 item.customer_id,
                                 "approve"
@@ -120,6 +126,8 @@ export default function TicketRedeem({ redeemData, handleRedeemUpdate }) {
                                 item.transaction_id,
                                 item.pledge_id,
                                 item.gold_type,
+                                item.interest_paid,
+                                item.principal_paid,
                                 item.weight,
                                 item.customer_id,
                                 "reject"

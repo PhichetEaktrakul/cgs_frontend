@@ -31,7 +31,7 @@ export default function Monitor({ refetchKey, prices }) {
   const switchOrderStatus = (status) => {
     if (!selectedTickets.length) return;
     apiAdmin
-      .post("/consignment/order-switch", { pledgeIds: selectedTickets, status })
+      .post("/dashboard/order-switch", { pledgeIds: selectedTickets, status })
       .then(() => {
         fetchTicket();
         toast.success(`เปลี่ยนสถานะเป็น ${status} เเล้ว!`);
@@ -44,7 +44,7 @@ export default function Monitor({ refetchKey, prices }) {
   // Fetch All Customer Pledge Ticket
   const fetchTicket = async () => {
     try {
-      const response = await apiAdmin.get("/consignment/monitor/all");
+      const response = await apiAdmin.get("/dashboard/monitor/all");
       setData(response.data);
     } catch (error) {
       console.error("Fetch tickets failed:", error);
@@ -89,7 +89,7 @@ export default function Monitor({ refetchKey, prices }) {
           ? shot
           : null;
 
-      if (item.gold_type === 1) {
+      if (item.gold_type === 2) {
         totals.vol96 += item.weight;
         if (ratio > 0) {
           totals.sum96 += ratio;
@@ -102,7 +102,7 @@ export default function Monitor({ refetchKey, prices }) {
             target.count96++;
           }
         }
-      } else if (item.gold_type === 2) {
+      } else if (item.gold_type === 1) {
         totals.vol99 += item.weight;
         if (ratio > 0) {
           totals.sum99 += ratio;

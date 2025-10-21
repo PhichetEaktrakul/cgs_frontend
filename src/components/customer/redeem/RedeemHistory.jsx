@@ -9,7 +9,7 @@ export default function RedeemHistory({ filteredData }) {
           filteredData.map((item) => (
             <div
               key={item.redeem_id}
-              className="grid grid-cols-[30%_20%_30%_20%] gap-y-1 border border-[#dabe96] rounded-lg my-3 p-3 text-[12px]">
+              className="grid grid-cols-[20%_30%_20%_30%] gap-y-1 border border-[#dabe96] rounded-lg my-3 p-3 text-[12px]">
               <p className="col-span-4 font-bold">
                 ไถ่ถอนเลขที่ : {item.redeem_id}
               </p>

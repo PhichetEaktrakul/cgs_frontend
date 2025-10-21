@@ -7,14 +7,12 @@ import ConsignmentForm from "../../components/customer/consignment/ConsignmentFo
 import ModalConsignment from "../../components/customer/consignment/ModalConsignment";
 
 export default function Consignment() {
-  const custid = localStorage.getItem("custid");
-  const randomPledgeId = Math.floor(Math.random() * 1000); // 0 to 999
+  const customerId = localStorage.getItem("customerId");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [selected, setSelected] = useState("1");
   const [tempValue, setTempValue] = useState({
-    pledgeId: 0,
-    customerId: 0,
+    customerId: "",
     weight: 0,
     refPrice1: 0,
     refPrice2: 0,
@@ -24,43 +22,44 @@ export default function Consignment() {
     interestPay: 0,
     startDate: "",
     endDate: "",
-    goldBalance96: 0,
     goldBalance99: 0,
+    goldBalance96: 0,
+    numPay: 0,
   });
 
   //----------------------------------------------------------------------------------------
   // Set Customer Initial Data
-  const fetchConsignmentData = async (custid) => {
-    if (!custid) return;
-
-    const today = new Date();
-    const twoMonthsLater = new Date(today);
-    twoMonthsLater.setMonth(today.getMonth() + 2);
+  const fetchConsignmentData = async (customerId) => {
+    if (!customerId) return;
 
     try {
-      const [metaRes, goldRes, goldAssnRes] = await Promise.all([
-        apiCust.get(`/customer/meta/${custid}`),
-        apiCust.get(`/customer/outer/${custid}/gold`),
+      const [initRes, goldRes, goldAssnRes] = await Promise.all([
+        apiCust.get(`/customer/initial/${customerId}`),
+        apiCust.get(`/customer/outer/${customerId}/gold`),
         apiCust.get("/gold-assn/latest"),
       ]);
 
-      const setting = metaRes.data;
+      const setting = initRes.data;
       const gold = goldRes.data;
       const goldAssn = goldAssnRes.data;
       const goldSell = parseInt(goldAssn.sellPrice.replace(/,/g, ""), 10);
 
+      const dateToday = new Date();
+      const dateEnd = new Date(dateToday);
+      dateEnd.setMonth(dateToday.getMonth() + setting.num_pay);
+
       setTempValue((prev) => ({
         ...prev,
-        pledgeId: randomPledgeId,
-        customerId: custid,
-        refPrice1: goldSell ?? 58950,
-        refPrice2: gold.ref_price2 ?? 59000,
+        customerId: customerId,
+        refPrice1: gold.ref_price2 ?? 69445,
+        refPrice2: goldSell ?? 67015,
         loanPercent: setting.loan_percent,
         interestRate: setting.interest_rate,
-        startDate: today.toISOString(),
-        endDate: twoMonthsLater.toISOString(),
-        goldBalance96: Number(gold.balance96) || 0,
+        startDate: dateToday.toISOString(),
+        endDate: dateEnd.toISOString(),        
         goldBalance99: Number(gold.balance99) || 0,
+        goldBalance96: Number(gold.balance96) || 0,
+        numPay: setting.num_pay,
       }));
     } catch (err) {
       console.error("Failed to fetch consignment data:", err);
@@ -75,7 +74,6 @@ export default function Consignment() {
     setIsLoading(true);
 
     const transaction = {
-      pledgeId: tempValue.pledgeId,
       customerId: tempValue.customerId,
       weight: tempValue.weight,
       goldType: selected == "1" ? 1 : 2,
@@ -87,14 +85,14 @@ export default function Consignment() {
       endDate: tempValue.endDate,
       transactionType: "ขายฝาก",
     };
-
     apiCust
       .post("/consignment/create", transaction)
       .then((res) => {
-        toast.success("ทำรายการสำเร็จ!");
+        /* console.log("Response:", res.data); */
+        toast.success(`ทำรายการเลขที่ ${res.data} สำเร็จ!`);
         setIsLoading(false);
         document.getElementById("submit_modal").close();
-        fetchConsignmentData(custid);
+        fetchConsignmentData(customerId);
       })
       .catch((err) => {
         toast.error("ทำรายการล้มเหลว!");
@@ -110,12 +108,12 @@ export default function Consignment() {
     if (selected == "1") {
       setTempValue((prev) => ({
         ...prev,
-        loanAmount: prev.weight * prev.refPrice1 * prev.loanPercent,
+        loanAmount: prev.weight * 65.6 * prev.refPrice1 * prev.loanPercent/100,
       }));
     } else {
       setTempValue((prev) => ({
         ...prev,
-        loanAmount: prev.weight * 65.6 * prev.refPrice2 * prev.loanPercent,
+        loanAmount: prev.weight * prev.refPrice2 * prev.loanPercent/100,
       }));
     }
   }, [tempValue.weight, tempValue.refPrice1, tempValue.loanPercent, selected]);
@@ -132,8 +130,8 @@ export default function Consignment() {
   //----------------------------------------------------------------------------------------
 
   useEffect(() => {
-    fetchConsignmentData(custid);
-  }, [custid]);
+    fetchConsignmentData(customerId);
+  }, [customerId]);
 
   return (
     <Header

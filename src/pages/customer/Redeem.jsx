@@ -6,7 +6,7 @@ import RedeemCard from "../../components/customer/redeem/RedeemCard";
 import ModalRedeem from "../../components/customer/redeem/ModalRedeem";
 
 export default function Redeem() {
-  const custid = localStorage.getItem("custid");
+  const customerId = localStorage.getItem("customerId");
   const [redeemList, setRedeemList] = useState([]);
   const [selectedData, setSelectedData] = useState(null);
 
@@ -49,7 +49,7 @@ export default function Redeem() {
   // Fetch Redeemable List and History
   const fetchData = async () => {
     try {
-      const redeemRes = await apiCust.get(`/redeem/list/${custid}`);
+      const redeemRes = await apiCust.get(`/redeem/list/${customerId}`);
       setRedeemList(redeemRes.data);
     } catch (error) {
       console.error(error);

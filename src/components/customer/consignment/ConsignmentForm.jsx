@@ -12,16 +12,16 @@ export default function ConsignmentForm({
     <>
       <div className="grid grid-cols-2 gap-4 text-center mb-3">
         <div>
-          <p>เลขที่สัญญา</p>
-          <p>{tempValue.pledgeId}</p>
-        </div>
-        <div>
-          <p>ราคาทองปัจจุบัน {selected == "1" ? "96.5" : "99.9"}</p>
+          <p>ราคาทองปัจจุบัน {selected == "1" ? "99.99" : "96.50"}</p>
           <p>
             {selected == "1"
               ? tempValue.refPrice1.toLocaleString()
               : tempValue.refPrice2.toLocaleString()}
           </p>
+        </div>
+        <div>
+          <p>ระยะสัญญา</p>
+          <p>{tempValue.numPay} เดือน</p>
         </div>
       </div>
       <div className="grid grid-cols-2 gap-4 text-center mb-3">
@@ -41,7 +41,7 @@ export default function ConsignmentForm({
         </div>
         <div>
           <p>วงเงิน</p>
-          <p>{tempValue.loanPercent * 100} %</p>
+          <p>{tempValue.loanPercent} %</p>
         </div>
       </div>
 
@@ -50,7 +50,7 @@ export default function ConsignmentForm({
       <div className="text-center mb-4">
         <p className="text-lg">ประเภททองที่ต้องการขายฝาก</p>
         <div className="grid grid-cols-2 grid-rows-1">
-          <div className="justify-end">
+          <div>
             <input
               type="radio"
               name="gold_percent"
@@ -58,7 +58,7 @@ export default function ConsignmentForm({
               checked={selected === "1"}
               onChange={(e) => setSelected(e.target.value)}
             />{" "}
-            ทอง 96.5%
+            ทอง 99.99%
           </div>
           <div>
             <input
@@ -68,25 +68,24 @@ export default function ConsignmentForm({
               checked={selected === "2"}
               onChange={(e) => setSelected(e.target.value)}
             />{" "}
-            ทอง 99.99%
+            ทอง 96.50%
           </div>
         </div>
       </div>
-      
+
       <form
         className="px-3"
         onSubmit={(e) => {
           e.preventDefault();
           setError(false);
           if (
-            (selected == "1" && tempValue.weight > tempValue.goldBalance96) ||
-            (selected == "2" && tempValue.weight > tempValue.goldBalance99) ||
+            (selected == "1" && tempValue.weight > tempValue.goldBalance99) ||
+            (selected == "2" && tempValue.weight > tempValue.goldBalance96) ||
             tempValue.weight <= 0
           )
             return setError(true);
           document.getElementById("submit_modal").showModal();
         }}>
-
         <div className="mt-2">
           <p>
             จำนวนที่ต้องการขายฝาก <span className="text-red-600">*</span>
@@ -107,7 +106,7 @@ export default function ConsignmentForm({
                 }));
               }}
             />
-            <span className="label">{selected == "1" ? "บาท" : "กิโล"}</span>
+            <span className="label">{selected == "1" ? "กิโล" : "บาท"}</span>
           </label>
           {error == true ? (
             <p className="text-red-600">กรุณากรอกจำนวนให้ถูกต้อง</p>
@@ -125,15 +124,15 @@ export default function ConsignmentForm({
               value={
                 selected == "1"
                   ? FormatNumber(
-                      Number(tempValue.goldBalance96) - Number(tempValue.weight)
+                      Number(tempValue.goldBalance99) - Number(tempValue.weight)
                     )
                   : FormatNumber(
-                      Number(tempValue.goldBalance99) - Number(tempValue.weight)
+                      Number(tempValue.goldBalance96) - Number(tempValue.weight)
                     )
               }
               readOnly
             />
-            <span className="label">{selected == "1" ? "บาท" : "กิโล"}</span>
+            <span className="label">{selected == "1" ? "กิโล" : "บาท"}</span>
           </label>
         </div>
 
